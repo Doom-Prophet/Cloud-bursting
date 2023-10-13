@@ -7,4 +7,4 @@
 #SBATCH --partition=cpu_mini
 
 echo "Hello World!"
-mpirun ./pingpong.py
+srun ./pingpong.py
