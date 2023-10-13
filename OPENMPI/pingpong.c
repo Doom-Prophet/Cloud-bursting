@@ -9,9 +9,13 @@ int main(int argc, char **argv) {
     char sendbuf[MESSAGE_SIZE], recvbuf[MESSAGE_SIZE];
     MPI_Status status;
 
+    printf("point 1");
+
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+    printf("point 2");
 
     if (size != 2) {
         printf("This benchmark should be run with two processes!\n");
@@ -27,6 +31,8 @@ int main(int argc, char **argv) {
     MPI_Barrier(MPI_COMM_WORLD);
     double start_time = MPI_Wtime();
 
+    printf("point 3");
+
     if (rank == 0) {
         for (i = 0; i < PINGPONG_COUNT; i++) {
             MPI_Send(sendbuf, MESSAGE_SIZE, MPI_CHAR, 1, 0, MPI_COMM_WORLD);
@@ -39,12 +45,16 @@ int main(int argc, char **argv) {
         }
     }
 
+    printf("point 4");
+
     double end_time = MPI_Wtime();
 
     if (rank == 0) {
         double elapsed_time = (end_time - start_time) / (2 * PINGPONG_COUNT);  // divide by 2 because it's a round trip
         printf("Ping-pong average latency: %f seconds\n", elapsed_time);
     }
+
+    printf("point 5");
 
     MPI_Finalize();
     return 0;
