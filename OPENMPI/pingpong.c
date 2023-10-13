@@ -21,8 +21,8 @@ int main(int argc, char **argv) {
   MPI_Comm_size(MPI_COMM_WORLD, &nproc);
 
   if (nproc != 2) {
-    printf("MPI_COMM_WORLD:",MPI_COMM_WORLD);
-    printf("me:",me);
+    printf("nproc %d\n", nproc);
+    printf("me %d\n", me);
     if (me == 0) printf("This benchmark should be run on exactly two processes");
     MPI_Abort(MPI_COMM_WORLD, 1);
   }
