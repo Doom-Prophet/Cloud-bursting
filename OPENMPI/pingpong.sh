@@ -6,4 +6,5 @@
 #SBATCH --output=pingpong_output.txt
 #SBATCH --partition=cpu_mini
 
-mpirun ./pingpong
+mpirun -np 2 ./pingpong
+
