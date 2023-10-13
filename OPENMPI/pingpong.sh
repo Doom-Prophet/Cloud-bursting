@@ -4,5 +4,6 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --time=00:10:00
 #SBATCH --output=pingpong_output.txt
+#SBATCH --partition=cpu_mini
 
 mpirun ./pingpong
