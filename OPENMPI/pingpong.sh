@@ -6,5 +6,4 @@
 #SBATCH --output=pingpong_output.txt
 #SBATCH --partition=cpu_mini
 
-echo "Hello World!"
-srun ./pingpong.py
+mpirun ./pingpong
