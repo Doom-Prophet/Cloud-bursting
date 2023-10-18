@@ -16,6 +16,7 @@ int main(int argc, char **argv) {
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
     if (size != 2) {
+        printf("The size is:",size);
         if (rank == 0) {
             printf("This benchmark should be run with two processes!\n");
         }
