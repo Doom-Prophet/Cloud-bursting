@@ -14,14 +14,14 @@ int main() {
 
     // Creating socket file descriptor
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
-        std::cerr << "Socket creation failed" << std::endl;
-        return -1;
+        perror("Socket failed");
+        exit(EXIT_FAILURE);
     }
 
-    // Attaching socket to the port
+    // Forcefully attaching socket to the port 8080
     if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt))) {
-        std::cerr << "Setsockopt failed" << std::endl;
-        return -1;
+        perror("Setsockopt failed");
+        exit(EXIT_FAILURE);
     }
 
     address.sin_family = AF_INET;
@@ -30,20 +30,20 @@ int main() {
 
     // Bind the socket to the address
     if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0) {
-        std::cerr << "Bind failed" << std::endl;
-        return -1;
+        perror("Bind failed");
+        exit(EXIT_FAILURE);
     }
 
-    // Listen for connections
+    // Start listening for connections
     if (listen(server_fd, 3) < 0) {
-        std::cerr << "Listen failed" << std::endl;
-        return -1;
+        perror("Listen failed");
+        exit(EXIT_FAILURE);
     }
 
-    // Accept a connection
-    if ((client_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen)) < 0) {
-        std::cerr << "Accept failed" << std::endl;
-        return -1;
+    // Accept incoming connection
+    if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen)) < 0) {
+        perror("Accept failed");
+        exit(EXIT_FAILURE);
     }
 
     int ping_count = 0;
