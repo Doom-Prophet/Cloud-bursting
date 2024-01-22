@@ -48,6 +48,7 @@ int main() {
 
     int ping_count = 0;
     while (ping_count < MAX_PINGS) {
+        std::cout << "Successfully launched" << std::endl;
         read(client_socket, buffer, 1024);
         std::cout << "Server: " << buffer << std::endl;
         send(client_socket, "Pong", strlen("Pong"), 0);
