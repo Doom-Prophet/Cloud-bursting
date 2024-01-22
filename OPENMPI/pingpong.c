@@ -1,61 +1,72 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <mpi.h>
+#include <unistd.h>
+#include <pthread.h>
 
-#define PINGPONG_COUNT 1000
-#define MESSAGE_SIZE 1024
+typedef struct {
+    int ping_count;
+    int rank;
+    pthread_mutex_t lock;
+} PingPong;
 
-int main(int argc, char **argv) {
-    int rank, size, i;
-    char sendbuf[MESSAGE_SIZE], recvbuf[MESSAGE_SIZE];
-    MPI_Status status;
-    double start, end, duration;
+void *ping(void *arg);
+void *pong(void *arg);
 
-    MPI_Init(&argc, &argv);
-    MPI_Comm_size(MPI_COMM_WORLD, &size);
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+int main() {
+    pthread_t thread1, thread2;
+    PingPong alice, bob;
 
-    if (size != 2) {
-        printf("The size is%d: !\n",size);
-        printf("The rank is%d: !\n",rank);
-        if (rank == 0) {
-            printf("This benchmark should be run with two processes!\n");
-        }
-        MPI_Abort(MPI_COMM_WORLD, 1);
-    }
+    alice.rank = 1;
+    alice.ping_count = 0;
+    pthread_mutex_init(&alice.lock, NULL);
 
-    // Warm up
-    for (i = 0; i < 10; i++) {
-        if (rank == 0) {
-            MPI_Send(sendbuf, MESSAGE_SIZE, MPI_CHAR, 1, 0, MPI_COMM_WORLD);
-            MPI_Recv(recvbuf, MESSAGE_SIZE, MPI_CHAR, 1, 0, MPI_COMM_WORLD, &status);
-        } else {
-            MPI_Recv(recvbuf, MESSAGE_SIZE, MPI_CHAR, 0, 0, MPI_COMM_WORLD, &status);
-            MPI_Send(sendbuf, MESSAGE_SIZE, MPI_CHAR, 0, 0, MPI_COMM_WORLD);
-        }
-    }
+    bob.rank = 2;
+    bob.ping_count = 0;
+    pthread_mutex_init(&bob.lock, NULL);
 
-    // Benchmark
-    MPI_Barrier(MPI_COMM_WORLD);
-    start = MPI_Wtime();
+    printf("Start!\n");
 
-    for (i = 0; i < PINGPONG_COUNT; i++) {
-        if (rank == 0) {
-            MPI_Send(sendbuf, MESSAGE_SIZE, MPI_CHAR, 1, 0, MPI_COMM_WORLD);
-            MPI_Recv(recvbuf, MESSAGE_SIZE, MPI_CHAR, 1, 0, MPI_COMM_WORLD, &status);
-        } else {
-            MPI_Recv(recvbuf, MESSAGE_SIZE, MPI_CHAR, 0, 0, MPI_COMM_WORLD, &status);
-            MPI_Send(sendbuf, MESSAGE_SIZE, MPI_CHAR, 0, 0, MPI_COMM_WORLD);
-        }
-    }
+    pthread_create(&thread1, NULL, ping, (void *)&alice);
+    pthread_create(&thread2, NULL, pong, (void *)&bob);
 
-    end = MPI_Wtime();
-    duration = (end - start) / (2 * PINGPONG_COUNT);  // Divide by 2 because of ping and pong
+    pthread_join(thread1, NULL);
+    pthread_join(thread2, NULL);
 
-    if (rank == 0) {
-        printf("Average latency for message size %d: %f ms\n", MESSAGE_SIZE, duration * 1000);
-    }
+    pthread_mutex_destroy(&alice.lock);
+    pthread_mutex_destroy(&bob.lock);
 
-    MPI_Finalize();
+    printf("Complete!\n");
     return 0;
+}
+
+void *ping(void *arg) {
+    PingPong *pp = (PingPong *)arg;
+    while (1) {
+        pthread_mutex_lock(&pp->lock);
+        if (pp->ping_count >= 5) {
+            pthread_mutex_unlock(&pp->lock);
+            break;
+        }
+        printf("Ping from rank %d\n", pp->rank);
+        pp->ping_count++;
+        pthread_mutex_unlock(&pp->lock);
+        sleep(1);
+    }
+    return NULL;
+}
+
+void *pong(void *arg) {
+    PingPong *pp = (PingPong *)arg;
+    while (1) {
+        pthread_mutex_lock(&pp->lock);
+        if (pp->ping_count >= 5) {
+            pthread_mutex_unlock(&pp->lock);
+            break;
+        }
+        printf("Pong from rank %d\n", pp->rank);
+        pp->ping_count++;
+        pthread_mutex_unlock(&pp->lock);
+        sleep(1);
+    }
+    return NULL;
 }
