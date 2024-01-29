@@ -1,72 +1,52 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <pthread.h>
+#include <ray/api.h>
+#include <iostream>
+#include <thread>
+#include <chrono>
 
-typedef struct {
-    int ping_count;
-    int rank;
-    pthread_mutex_t lock;
-} PingPong;
+class PingPong {
+    public:
+        PingPong(int rank) : ping_count(0), rank(rank) {}
 
-void *ping(void *arg);
-void *pong(void *arg);
+        void registerPartner(ray::ActorHandle<PingPong> partner) {
+            this->partner = partner;
+        }
 
-int main() {
-    pthread_t thread1, thread2;
-    PingPong alice, bob;
+        ray::ObjectRef<void> ping() {
+            ping_count++;
+            if (ping_count < 5) {
+                std::cout << "Ping from rank " << rank << std::endl;
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+                return partner.Task(&PingPong::pong).Remote();
+            }
+            return ray::Nil();
+        }
 
-    alice.rank = 1;
-    alice.ping_count = 0;
-    pthread_mutex_init(&alice.lock, NULL);
+        ray::ObjectRef<void> pong() {
+            std::cout << "Pong from rank " << rank << std::endl;
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+            return partner.Task(&PingPong::ping).Remote();
+        }
 
-    bob.rank = 2;
-    bob.ping_count = 0;
-    pthread_mutex_init(&bob.lock, NULL);
+    private:
+        int ping_count;
+        int rank;
+        ray::ActorHandle<PingPong> partner;
+    };
 
-    printf("Start!\n");
+int main(int argc, char **argv) {
+    ray::RayConfig config;
+    // Configure and initialize Ray runtime here, e.g., connecting to a specific cluster.
+    ray::Init(config);
 
-    pthread_create(&thread1, NULL, ping, (void *)&alice);
-    pthread_create(&thread2, NULL, pong, (void *)&bob);
+    auto alice = ray::Actor(PingPong::Factory, 1).Remote();
+    auto bob = ray::Actor(PingPong::Factory, 2).Remote();
 
-    pthread_join(thread1, NULL);
-    pthread_join(thread2, NULL);
+    alice.Task(&PingPong::registerPartner, bob).Remote();
+    bob.Task(&PingPong::registerPartner, alice).Remote();
 
-    pthread_mutex_destroy(&alice.lock);
-    pthread_mutex_destroy(&bob.lock);
+    auto task = alice.Task(&PingPong::ping).Remote();
+    ray::Wait({task});
 
-    printf("Complete!\n");
+    ray::Shutdown();
     return 0;
-}
-
-void *ping(void *arg) {
-    PingPong *pp = (PingPong *)arg;
-    while (1) {
-        pthread_mutex_lock(&pp->lock);
-        if (pp->ping_count >= 5) {
-            pthread_mutex_unlock(&pp->lock);
-            break;
-        }
-        printf("Ping from rank %d\n", pp->rank);
-        pp->ping_count++;
-        pthread_mutex_unlock(&pp->lock);
-        sleep(1);
-    }
-    return NULL;
-}
-
-void *pong(void *arg) {
-    PingPong *pp = (PingPong *)arg;
-    while (1) {
-        pthread_mutex_lock(&pp->lock);
-        if (pp->ping_count >= 5) {
-            pthread_mutex_unlock(&pp->lock);
-            break;
-        }
-        printf("Pong from rank %d\n", pp->rank);
-        pp->ping_count++;
-        pthread_mutex_unlock(&pp->lock);
-        sleep(1);
-    }
-    return NULL;
 }
