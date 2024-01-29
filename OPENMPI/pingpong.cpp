@@ -1,37 +1,50 @@
-// #include <ray/api.h>
+#include <ray/api.h>
 #include <iostream>
 #include <thread>
 #include <chrono>
 
 class PingPong {
-    public:
-        PingPong(int rank) : ping_count(0), rank(rank) {}
+public:
+    int ping_count;
+    int rank;
+    ray::ActorHandle<PingPong> partner;
 
-        void registerPartner(ray::ActorHandle<PingPong> partner) {
-            this->partner = partner;
-        }
+    PingPong(int rank) : ping_count(0), rank(rank) {}
 
-        ray::ObjectRef<void> ping() {
-            ping_count++;
-            if (ping_count < 5) {
-                std::cout << "Ping from rank " << rank << std::endl;
-                std::this_thread::sleep_for(std::chrono::seconds(1));
-                return partner.Task(&PingPong::pong).Remote();
-            }
-            return ray::Nil();
-        }
+    static void RegisterPartner(ray::ActorHandle<PingPong>& self, ray::ActorHandle<PingPong>& partner) {
+        self->registerPartner(partner);
+    }
 
-        ray::ObjectRef<void> pong() {
-            std::cout << "Pong from rank " << rank << std::endl;
+    void registerPartner(ray::ActorHandle<PingPong>& partner) {
+        this->partner = partner;
+    }
+
+    static ray::ObjectRef<void> Ping(ray::ActorHandle<PingPong>& self) {
+        return self->ping();
+    }
+
+    ray::ObjectRef<void> ping() {
+        ping_count++;
+        if (ping_count < 5) {
+            std::cout << "Ping from rank " << rank << std::endl;
             std::this_thread::sleep_for(std::chrono::seconds(1));
-            return partner.Task(&PingPong::ping).Remote();
+            return partner.Task(&PingPong::Pong, partner).Remote();
         }
+        return ray::Nil();
+    }
 
-    private:
-        int ping_count;
-        int rank;
-        ray::ActorHandle<PingPong> partner;
-    };
+    static ray::ObjectRef<void> Pong(ray::ActorHandle<PingPong>& self) {
+        return self->pong();
+    }
+
+    ray::ObjectRef<void> pong() {
+        std::cout << "Pong from rank " << rank << std::endl;
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        return partner.Task(&PingPong::Ping, partner).Remote();
+    }
+};
+
+RAY_REMOTE(PingPong::RegisterPartner, PingPong::Ping, PingPong::Pong);
 
 int main(int argc, char **argv) {
     ray::Init();
@@ -39,11 +52,10 @@ int main(int argc, char **argv) {
     auto alice = ray::Actor(PingPong::Factory, 1).Remote();
     auto bob = ray::Actor(PingPong::Factory, 2).Remote();
 
-    alice.Task(&PingPong::registerPartner, bob).Remote();
-    bob.Task(&PingPong::registerPartner, alice).Remote();
+    ray::Task(PingPong::RegisterPartner, alice, bob).Remote();
+    ray::Task(PingPong::RegisterPartner, bob, alice).Remote();
 
-    auto task = alice.Task(&PingPong::ping).Remote();
-    ray::Wait({task});
+    ray::Task(PingPong::Ping, alice).Remote();
 
     ray::Shutdown();
     return 0;
