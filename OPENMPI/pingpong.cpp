@@ -1,4 +1,4 @@
-#include <ray/api.h>
+// #include <ray/api.h>
 #include <iostream>
 #include <thread>
 #include <chrono>
@@ -34,9 +34,7 @@ class PingPong {
     };
 
 int main(int argc, char **argv) {
-    ray::RayConfig config;
-    // Configure and initialize Ray runtime here, e.g., connecting to a specific cluster.
-    ray::Init(config);
+    ray::Init();
 
     auto alice = ray::Actor(PingPong::Factory, 1).Remote();
     auto bob = ray::Actor(PingPong::Factory, 2).Remote();
