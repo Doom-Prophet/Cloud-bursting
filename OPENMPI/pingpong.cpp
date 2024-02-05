@@ -61,6 +61,6 @@ int main(int argc, char **argv) {
 
     printf("Checkpoint 3");
 
-    ray::Shutdown();
+    // ray::Shutdown();
     return 0;
 }
