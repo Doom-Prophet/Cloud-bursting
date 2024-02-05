@@ -84,22 +84,17 @@
 //     return 0;
 // }
 
-class Counter {
-    int count;
-public:
-    Counter(int init) {count = init;}
-    int Add(int x) {return x + 1;}
-};
-
-Counter *CreateCounter(int init) {
-    return new Counter(init);
+// A regular C++ function.
+int MyFunction() {
+  return 1;
 }
-RAY_REMOTE(CreateCounter, &Counter::Add);
+// Register as a remote function by `RAY_REMOTE`.
+RAY_REMOTE(MyFunction);
 
-// Create a actor
-ray::ActorHandle<Counter> actor = ray::Actor(CreateCounter).Remote(0);
+// Invoke the above method as a Ray task.
+// This will immediately return an object ref (a future) and then create
+// a task that will be executed on a worker process.
+auto res = ray::Task(MyFunction).Remote();
 
-// Call the actor's remote function
-auto result = actor.Task(&Counter::Add).Remote(1);
-int value = *result.Get(); // Retrieve the result of the remote function call
-printf("%d\n", value); // Correctly print the integer result
+// The result can be retrieved with ``ray::ObjectRef::Get``.
+assert(*res.Get() == 1);
