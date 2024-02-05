@@ -1,5 +1,5 @@
 #include <iostream>
-#include <ray/api.h>
+// #include <ray/api.h>
 // #include <thread>
 // #include <chrono>
 
@@ -84,26 +84,28 @@
 //     return 0;
 // }
 
-class Counter {
-    int count;
-public:
-    Counter(int init) {count = init;}
-    int Add(int x) {return x + 1;}
-    std::cout << "Hi" << std::endl;
-};
+// class Counter {
+//     int count;
+// public:
+//     Counter(int init) {count = init;}
+//     int Add(int x) {return x + 1;}
+//     std::cout << "Hi" << std::endl;
+// };
 
-Counter *CreateCounter(int init) {
-    return new Counter(init);
-}
-RAY_REMOTE(CreateCounter, &Counter::Add);
+// Counter *CreateCounter(int init) {
+//     return new Counter(init);
+// }
+// RAY_REMOTE(CreateCounter, &Counter::Add);
 
 int main(){
     // Create a actor
-    ray::ActorHandle<Counter> actor = ray::Actor(CreateCounter).Remote(0);
+    // ray::ActorHandle<Counter> actor = ray::Actor(CreateCounter).Remote(0);
 
     // Call the actor's remote function
-    auto result = actor.Task(&Counter::Add).Remote(1);
+    // auto result = actor.Task(&Counter::Add).Remote(1);
     // int value = *res.Get(); // Retrieve the result of the remote function call
     // printf("%d\n", value); // Correctly print the integer result
+
+    std::cout << "Hi" << std::endl;
     return 0;
 }
