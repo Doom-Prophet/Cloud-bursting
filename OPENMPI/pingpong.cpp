@@ -97,10 +97,13 @@ Counter *CreateCounter(int init) {
 }
 RAY_REMOTE(CreateCounter, &Counter::Add);
 
-// Create a actor
-ray::ActorHandle<Counter> actor = ray::Actor(CreateCounter).Remote(0);
+int main(){
+    // Create a actor
+    ray::ActorHandle<Counter> actor = ray::Actor(CreateCounter).Remote(0);
 
-// Call the actor's remote function
-auto result = actor.Task(&Counter::Add).Remote(1);
-// int value = *res.Get(); // Retrieve the result of the remote function call
-// printf("%d\n", value); // Correctly print the integer result
+    // Call the actor's remote function
+    auto result = actor.Task(&Counter::Add).Remote(1);
+    // int value = *res.Get(); // Retrieve the result of the remote function call
+    // printf("%d\n", value); // Correctly print the integer result
+    return 0;
+}
