@@ -1,6 +1,5 @@
 #include <ray/api.h>
-#include <cstdio>
-// #include <iostream>
+#include <iostream>
 // #include <thread>
 // #include <chrono>
 
@@ -90,7 +89,7 @@ class Counter {
 public:
     Counter(int init) {count = init;}
     int Add(int x) {return x + 1;}
-    printf("Hi");
+    std::cout << "Hi" << std::endl;
 };
 
 Counter *CreateCounter(int init) {
