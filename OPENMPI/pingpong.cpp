@@ -97,8 +97,8 @@ Counter *CreateCounter(int init) {
 RAY_REMOTE(CreateCounter, &Counter::Add);
 
 // Create a actor
-ActorHandle<Counter> actor = ray::Actor(CreateCounter).Remote(0);
+ray::ActorHandle<Counter> actor = ray::Actor(CreateCounter).Remote(0);
 
 // Call the actor's remote function
 auto result = actor.Task(&Counter::Add).Remote(1);
-EXPECT_EQ(1, *(ray::Get(result)));
+print(*(ray::Get(result)));
