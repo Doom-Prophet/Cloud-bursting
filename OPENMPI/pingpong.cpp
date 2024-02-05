@@ -4,7 +4,7 @@
 #include <chrono>
 
 class PingPong {
-    int ping_count = 0;
+    // int ping_count = 0;
     int rank;
 
 public:
@@ -18,40 +18,23 @@ public:
         this->partner = partner;
         return 0;
     }
-
-    ObjectRef<void> Ping() {
-        ping_count++;
+    
+    void Ping() {
+        // ping_count++;
         if (ping_count < 2) {
             std::cout << "Ping from rank " << rank << std::endl;
             std::this_thread::sleep_for(std::chrono::seconds(1));
-            return partner.Task(&PingPong::Pong).Remote();
+            // partner.Task(&PingPong::Pong).Remote();
+            partner.Task(&PingPong::Pong).Remote();
         }
-        return ray::Task([]() {}).Remote();
     }
 
-    ObjectRef<void> Pong() {
+    void Pong() {
         std::cout << "Pong from rank " << rank << std::endl;
         std::this_thread::sleep_for(std::chrono::seconds(1));
-        return partner.Task(&PingPong::Ping).Remote();
+        // partner.Task(&PingPong::Ping).Remote();
+        // partner.Task(&PingPong::Ping).Remote();
     }
-
-    // auto Ping() {
-    //     ping_count++;
-    //     if (ping_count < 2) {
-    //         std::cout << "Ping from rank " << rank << std::endl;
-    //         std::this_thread::sleep_for(std::chrono::seconds(1));
-    //         // partner.Task(&PingPong::Pong).Remote();
-    //         return partner.Task(&PingPong::Pong).Remote();
-    //     }
-    //     return 0;
-    // }
-
-    // auto Pong() {
-    //     std::cout << "Pong from rank " << rank << std::endl;
-    //     std::this_thread::sleep_for(std::chrono::seconds(1));
-    //     // partner.Task(&PingPong::Ping).Remote();
-    //     return partner.Task(&PingPong::Ping).Remote();
-    // }
 
     void Test() {
         std::cout << "Checkpoint 4 " << rank << std::endl;
@@ -66,6 +49,8 @@ PingPong *CreatePlayer(int rank_input){
 RAY_REMOTE(CreatePlayer, &PingPong::RegisterPartner, &PingPong::Ping, &PingPong::Pong, &PingPong::Test);
 
 int main(int argc, char **argv) {
+    int ping_count = 0;
+
     ray::Init();
 
     printf("Checkpoint 1");
@@ -84,9 +69,9 @@ int main(int argc, char **argv) {
 
     printf("Checkpoint 6");
     
-    auto result = ray::Get(alice.Task(&PingPong::Ping).Remote());
-    while(result != ObjectRef<void>){
-        result = ray::Get(alice.Task(&PingPong::Ping).Remote());
+    while(ping_count < 5){
+        ping_count++;
+        ray::Get(alice.Task(&PingPong::Ping).Remote());
     }
 
     printf("Checkpoint 7");
