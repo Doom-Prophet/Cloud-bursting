@@ -19,7 +19,7 @@ public:
         return 0;
     }
 
-    ray::ObjectRef<void> Ping() {
+    ObjectRef<void> Ping() {
         ping_count++;
         if (ping_count < 2) {
             std::cout << "Ping from rank " << rank << std::endl;
@@ -29,7 +29,7 @@ public:
         return ray::Task([]() {}).Remote();
     }
 
-    ray::ObjectRef<void> Pong() {
+    ObjectRef<void> Pong() {
         std::cout << "Pong from rank " << rank << std::endl;
         std::this_thread::sleep_for(std::chrono::seconds(1));
         return partner.Task(&PingPong::Ping).Remote();
@@ -85,7 +85,7 @@ int main(int argc, char **argv) {
     printf("Checkpoint 6");
     
     auto result = ray::Get(alice.Task(&PingPong::Ping).Remote());
-    while(result != ray::ObjectRef<void>){
+    while(result != ObjectRef<void>){
         result = ray::Get(alice.Task(&PingPong::Ping).Remote());
     }
 
