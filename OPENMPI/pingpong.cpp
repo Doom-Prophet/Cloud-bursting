@@ -5,50 +5,57 @@
 
 class PingPong {
 public:
-    static int ping_count;
-    static int rank;
-    static ray::ActorHandle<PingPong> partner;
+    int ping_count;
+    int rank;
+    ray::ActorHandle<PingPong> partner;
 
-    PingPong(int rank) { PingPong::rank = rank; }
+    PingPong(int rank) : ping_count(0), rank(rank) {}
 
-    static void RegisterPartner(ray::ActorHandle<PingPong> partner) {
-        PingPong::partner = partner;
+    static void RegisterPartner(ray::ActorHandle<PingPong>& self, ray::ActorHandle<PingPong>& partner) {
+        self->registerPartner(partner);
     }
 
-    static ray::ObjectRef<void> Ping() {
+    void registerPartner(ray::ActorHandle<PingPong>& partner) {
+        this->partner = partner;
+    }
+
+    static ray::ObjectRef<void> Ping(ray::ActorHandle<PingPong>& self, ray::ActorHandle<PingPong>& partner) {
+        return self->ping();
+    }
+
+    ray::ObjectRef<void> ping() {
         ping_count++;
         if (ping_count < 5) {
             std::cout << "Ping from rank " << rank << std::endl;
             std::this_thread::sleep_for(std::chrono::seconds(1));
-            return partner.Task(&PingPong::Pong).Remote();
+            return partner.Task(&PingPong::Pong, partner).Remote();
         }
-        return ray::ObjectRef<void>();
+        return ray::Nil();
     }
 
-    static ray::ObjectRef<void> Pong() {
+    static ray::ObjectRef<void> Pong(ray::ActorHandle<PingPong>& self, ) {
+        return self->pong();
+    }
+
+    ray::ObjectRef<void> pong() {
         std::cout << "Pong from rank " << rank << std::endl;
         std::this_thread::sleep_for(std::chrono::seconds(1));
-        return partner.Task(&PingPong::Ping).Remote();
+        return partner.Task(&PingPong::Ping, partner).Remote();
     }
 };
-
-// Initialize static members
-int PingPong::ping_count = 0;
-int PingPong::rank = 0;
-ray::ActorHandle<PingPong> PingPong::partner;
 
 RAY_REMOTE(PingPong::RegisterPartner, PingPong::Ping, PingPong::Pong);
 
 int main(int argc, char **argv) {
     ray::Init();
 
-    auto alice = ray::Actor(PingPong::Factory, 1).Remote();
-    auto bob = ray::Actor(PingPong::Factory, 2).Remote();
+    auto alice = ray::Actor(PingPong::PingPong, 1).Remote();
+    auto bob = ray::Actor(PingPong::PingPong, 2).Remote();
 
-    alice.Task(&PingPong::RegisterPartner, bob).Remote();
-    bob.Task(&PingPong::RegisterPartner, alice).Remote();
+    ray::Task(PingPong::RegisterPartner, alice, bob).Remote();
+    ray::Task(PingPong::RegisterPartner, bob, alice).Remote();
 
-    alice.Task(&PingPong::Ping).Remote();
+    ray::Task(PingPong::Ping, alice).Remote();
 
     ray::Shutdown();
     return 0;
