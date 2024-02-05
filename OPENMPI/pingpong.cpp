@@ -27,7 +27,7 @@ public:
         this->partner = partner;
     }
 
-    static ray::ObjectRef<void> Ping(ray::ActorHandle<PingPong>& self, ray::ActorHandle<PingPong>& partner) {
+    static ray::ObjectRef<void> Ping(ray::ActorHandle<PingPong>& self) {
         return self->ping();
     }
 
@@ -36,19 +36,21 @@ public:
         if (ping_count < 5) {
             std::cout << "Ping from rank " << rank << std::endl;
             std::this_thread::sleep_for(std::chrono::seconds(1));
-            return partner.Task(&PingPong::Pong, partner).Remote();
+            ray::Get(partner.Task(&PingPong::Pong).Remote())
+            // return partner.Task(&PingPong::Pong, partner).Remote();
         }
-        return ray::Nil();
+        // return ray::Nil();
     }
 
-    static ray::ObjectRef<void> Pong(ray::ActorHandle<PingPong>& self, ray::ActorHandle<PingPong>& partner) {
+    static ray::ObjectRef<void> Pong(ray::ActorHandle<PingPong>& self) {
         return self->pong();
     }
 
     ray::ObjectRef<void> pong() {
         std::cout << "Pong from rank " << rank << std::endl;
         std::this_thread::sleep_for(std::chrono::seconds(1));
-        return partner.Task(&PingPong::Ping, partner).Remote();
+        ray::Get(partner.Task(&PingPong::Ping).Remote())
+        // return partner.Task(&PingPong::Ping, partner).Remote();
     }
 };
 
@@ -60,10 +62,10 @@ int main(int argc, char **argv) {
     ray::ActorHandle<PingPong> alice = ray::Actor(CreatePlayer).Remote(1);
     ray::ActorHandle<PingPong> bob = ray::Actor(CreatePlayer).Remote(2);
 
-    ray::Task(PingPong::RegisterPartner, alice, bob).Remote();
-    ray::Task(PingPong::RegisterPartner, bob, alice).Remote();
+    alice.Task(&PingPong::RegisterPartner).Remote(bob);
+    bob.Task(&PingPong::RegisterPartner).Remote(alice);
 
-    ray::Task(PingPong::Ping, alice).Remote();
+    alice.Task(&PingPong::Ping).Remote();
 
     ray::Shutdown();
     return 0;
