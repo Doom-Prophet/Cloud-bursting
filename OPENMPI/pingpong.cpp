@@ -101,4 +101,5 @@ ray::ActorHandle<Counter> actor = ray::Actor(CreateCounter).Remote(0);
 
 // Call the actor's remote function
 auto result = actor.Task(&Counter::Add).Remote(1);
-printf(*(ray::Get(result)));
+int value = ray::Get(result); // Retrieve the result of the remote function call
+printf("%d\n", value); // Correctly print the integer result
