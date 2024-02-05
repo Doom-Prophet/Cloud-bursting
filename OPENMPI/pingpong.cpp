@@ -35,6 +35,11 @@ public:
         partner.Task(&PingPong::Ping).Remote();
         // return partner.Task(&PingPong::Ping, partner).Remote();
     }
+
+    void Test() {
+        std::cout << "Checkpoint 1 " << rank << std::endl;
+        printf("Checkpoint 2");
+    }
 };
 
 PingPong *CreatePlayer(int rank_input){
@@ -53,6 +58,8 @@ int main(int argc, char **argv) {
     bob.Task(&PingPong::RegisterPartner).Remote(alice);
 
     alice.Task(&PingPong::Ping).Remote();
+
+    printf("Checkpoint 3");
 
     ray::Shutdown();
     return 0;
