@@ -15,7 +15,7 @@ public:
         rank = rank_input;
     }
 
-    Pingpong *CreatePlayer(int rank_input){
+    PingPong *CreatePlayer(int rank_input){
         return new Pingpong(rank_input);
     }
 
