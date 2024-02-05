@@ -19,7 +19,7 @@ public:
         return 0;
     }
     
-    void Ping() {
+    int Ping() {
         // ping_count++;
         // if (ping_count < 2) {
         std::cout << "Ping from rank " << rank << std::endl;
@@ -27,18 +27,21 @@ public:
         // partner.Task(&PingPong::Pong).Remote();
         // partner.Task(&PingPong::Pong).Remote();
         // }
+        return 0;
     }
 
-    void Pong() {
+    int Pong() {
         std::cout << "Pong from rank " << rank << std::endl;
         std::this_thread::sleep_for(std::chrono::seconds(1));
         // partner.Task(&PingPong::Ping).Remote();
         // partner.Task(&PingPong::Ping).Remote();
+        return 0;
     }
 
-    void Test() {
+    int Test() {
         std::cout << "Checkpoint 4 " << rank << std::endl;
         printf("Checkpoint 5");
+        return 0;
     }
 };
 
