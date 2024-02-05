@@ -23,7 +23,7 @@ public:
         this->partner = partner;
     }
 
-    void ping() {
+    void Ping() {
         ping_count++;
         if (ping_count < 5) {
             std::cout << "Ping from rank " << rank << std::endl;
@@ -34,7 +34,7 @@ public:
         // return ray::Nil();
     }
 
-    void pong() {
+    void Pong() {
         std::cout << "Pong from rank " << rank << std::endl;
         std::this_thread::sleep_for(std::chrono::seconds(1));
         partner.Task(&PingPong::Ping).Remote();
