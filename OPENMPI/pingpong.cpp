@@ -95,7 +95,7 @@ public:
 Counter *CreateCounter(int init) {
     return new Counter(init);
 }
-// RAY_REMOTE(CreateCounter, &Counter::Add);
+RAY_REMOTE(CreateCounter, &Counter::Add);
 
 int main(){
     std::cout << "Hi 1" << std::endl;
