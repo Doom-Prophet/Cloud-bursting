@@ -69,9 +69,10 @@ int main(int argc, char **argv) {
     printf("Checkpoint 6");
     
     auto result = ray::Get(alice.Task(&PingPong::Ping).Remote());
-    while(result != 0):
+    while(result != 0){
         result = ray::Get(alice.Task(&PingPong::Ping).Remote());
-
+    }
+    
     printf("Checkpoint 7");
 
     // ray::Shutdown();
