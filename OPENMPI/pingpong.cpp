@@ -4,7 +4,7 @@
 #include <chrono>
 
 class PingPong {
-    // int ping_count = 0;
+    int ping_count = 0;
     int rank;
 
 public:
@@ -20,13 +20,13 @@ public:
     }
     
     int Ping() {
-        // ping_count++;
-        // if (ping_count < 2) {
-        std::cout << "Ping from rank " << rank << std::endl;
+        ping_count++;
+        if (ping_count < 2) {
+            std::cout << "Ping from rank " << rank << std::endl;
         // std::this_thread::sleep_for(std::chrono::seconds(1));
         // partner.Task(&PingPong::Pong).Remote();
-        // partner.Task(&PingPong::Pong).Remote();
-        // }
+            partner.Task(&PingPong::Pong).Remote();
+        }
         return 0;
     }
 
@@ -34,7 +34,7 @@ public:
         std::cout << "Pong from rank " << rank << std::endl;
         // std::this_thread::sleep_for(std::chrono::seconds(1));
         // partner.Task(&PingPong::Ping).Remote();
-        // partner.Task(&PingPong::Ping).Remote();
+        partner.Task(&PingPong::Ping).Remote();
         return 0;
     }
 
@@ -73,9 +73,9 @@ int main(int argc, char **argv) {
     printf("Checkpoint 6");
     
     while(ping_count < 5){
-        ping_count++;
+        // ping_count++;
         auto res1 = ray::Get(alice.Task(&PingPong::Ping).Remote());
-        auto res2 = ray::Get(bob.Task(&PingPong::Pong).Remote());
+        // auto res2 = ray::Get(bob.Task(&PingPong::Pong).Remote());
     }
 
     printf("Checkpoint 7");
