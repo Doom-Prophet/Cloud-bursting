@@ -39,7 +39,7 @@ public:
     }
 
     int Test() {
-        std::cout << "Checkpoint 4 " << rank << std::endl;
+        std::cout << "Checkpoint 4 " << std::endl;
         printf("Checkpoint 5");
         return 0;
     }
@@ -68,14 +68,15 @@ int main(int argc, char **argv) {
 
     printf("Checkpoint 3");
 
-    ray::Get(alice.Task(&PingPong::Test).Remote());
+    auto res0 = ray::Get(alice.Task(&PingPong::Test).Remote());
+    printf(res0);
 
     printf("Checkpoint 6");
     
     while(ping_count < 5){
         ping_count++;
-        ray::Get(alice.Task(&PingPong::Ping).Remote());
-        ray::Get(bob.Task(&PingPong::Pong).Remote());
+        auto res1 = ray::Get(alice.Task(&PingPong::Ping).Remote());
+        auto res2 = ray::Get(bob.Task(&PingPong::Pong).Remote());
     }
 
     printf("Checkpoint 7");
