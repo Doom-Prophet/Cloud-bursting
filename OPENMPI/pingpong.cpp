@@ -4,12 +4,20 @@
 #include <chrono>
 
 class PingPong {
-public:
     int ping_count;
     int rank;
+
+public:
     ray::ActorHandle<PingPong> partner;
 
-    PingPong(int rank) : ping_count(0), rank(rank) {}
+    PingPong(int rank_input){
+        ping_count = 0;
+        rank = rank_input;
+    }
+
+    Pingpong *CreatePlayer(int rank_input){
+        return new Pingpong(rank_input);
+    }
 
     static void RegisterPartner(ray::ActorHandle<PingPong>& self, ray::ActorHandle<PingPong>& partner) {
         self->registerPartner(partner);
@@ -49,8 +57,8 @@ RAY_REMOTE(PingPong::RegisterPartner, PingPong::Ping, PingPong::Pong);
 int main(int argc, char **argv) {
     ray::Init();
 
-    auto alice = ray::Actor(PingPong, 1).Remote(0);
-    auto bob = ray::Actor(PingPong, 2).Remote(0);
+    ActorHandle<PingPong> alice = ray::Actor(CreatePlayer).Remote(1);
+    ActorHandle<PingPong> bob = ray::Actor(CreatePlayer).Remote(2);
 
     ray::Task(PingPong::RegisterPartner, alice, bob).Remote();
     ray::Task(PingPong::RegisterPartner, bob, alice).Remote();
