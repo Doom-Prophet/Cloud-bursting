@@ -34,7 +34,7 @@ public:
         if (ping_count < 5) {
             std::cout << "Ping from rank " << rank << std::endl;
             std::this_thread::sleep_for(std::chrono::seconds(1));
-            ray::Get(partner.Task(&PingPong::Pong).Remote())
+            ray::Get(partner.Task(&PingPong::Pong).Remote());
             // return partner.Task(&PingPong::Pong, partner).Remote();
         }
         // return ray::Nil();
@@ -47,7 +47,7 @@ public:
     ray::ObjectRef<void> pong() {
         std::cout << "Pong from rank " << rank << std::endl;
         std::this_thread::sleep_for(std::chrono::seconds(1));
-        ray::Get(partner.Task(&PingPong::Ping).Remote())
+        ray::Get(partner.Task(&PingPong::Ping).Remote());
         // return partner.Task(&PingPong::Ping, partner).Remote();
     }
 };
