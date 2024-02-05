@@ -1,4 +1,5 @@
 #include <ray/api.h>
+#include <cassert>
 // #include <iostream>
 // #include <thread>
 // #include <chrono>
