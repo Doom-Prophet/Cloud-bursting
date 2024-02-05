@@ -89,7 +89,7 @@ class Counter {
 public:
     Counter(int init) {count = init;}
     int Add(int x) {return x + 1;}
-    // std::cout << "Hi" << std::endl;
+    std::cout << "Hi" << std::endl;
 };
 
 Counter *CreateCounter(int init) {
