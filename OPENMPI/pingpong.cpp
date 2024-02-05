@@ -25,7 +25,7 @@ public:
         std::cout << "Ping from rank " << rank << std::endl;
         std::this_thread::sleep_for(std::chrono::seconds(1));
         // partner.Task(&PingPong::Pong).Remote();
-        partner.Task(&PingPong::Pong).Remote();
+        // partner.Task(&PingPong::Pong).Remote();
         // }
     }
 
@@ -72,6 +72,7 @@ int main(int argc, char **argv) {
     while(ping_count < 5){
         ping_count++;
         ray::Get(alice.Task(&PingPong::Ping).Remote());
+        ray::Get(bob.Task(&PingPong::Pong).Remote());
     }
 
     printf("Checkpoint 7");
