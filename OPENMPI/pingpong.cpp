@@ -15,8 +15,6 @@ public:
         rank = rank_input;
     }
 
-    
-
     static void RegisterPartner(ray::ActorHandle<PingPong>& self, ray::ActorHandle<PingPong>& partner) {
         self->registerPartner(partner);
     }
@@ -25,29 +23,21 @@ public:
         this->partner = partner;
     }
 
-    static ray::ObjectRef<void> Ping(ray::ActorHandle<PingPong>& self) {
-        return self->ping();
-    }
-
-    ray::ObjectRef<void> ping() {
+    void ping() {
         ping_count++;
         if (ping_count < 5) {
             std::cout << "Ping from rank " << rank << std::endl;
             std::this_thread::sleep_for(std::chrono::seconds(1));
-            ray::Get(partner.Task(&PingPong::Pong).Remote());
+            partner.Task(&PingPong::Pong).Remote();
             // return partner.Task(&PingPong::Pong, partner).Remote();
         }
         // return ray::Nil();
     }
 
-    static ray::ObjectRef<void> Pong(ray::ActorHandle<PingPong>& self) {
-        return self->pong();
-    }
-
-    ray::ObjectRef<void> pong() {
+    void pong() {
         std::cout << "Pong from rank " << rank << std::endl;
         std::this_thread::sleep_for(std::chrono::seconds(1));
-        ray::Get(partner.Task(&PingPong::Ping).Remote());
+        partner.Task(&PingPong::Ping).Remote();
         // return partner.Task(&PingPong::Ping, partner).Remote();
     }
 };
