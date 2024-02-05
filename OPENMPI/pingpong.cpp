@@ -14,8 +14,9 @@ public:
         rank = rank_input;
     }
 
-    void RegisterPartner(ray::ActorHandle<PingPong> partner) {
+    int RegisterPartner(ray::ActorHandle<PingPong> partner) {
         this->partner = partner;
+        return 0;
     }
 
     void Ping() {
