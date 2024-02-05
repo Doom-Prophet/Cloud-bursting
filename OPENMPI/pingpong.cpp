@@ -49,8 +49,8 @@ RAY_REMOTE(PingPong::RegisterPartner, PingPong::Ping, PingPong::Pong);
 int main(int argc, char **argv) {
     ray::Init();
 
-    auto alice = ray::Actor(PingPong, 1).Remote();
-    auto bob = ray::Actor(PingPong, 2).Remote();
+    auto alice = ray::Actor(PingPong, 1).Remote(0);
+    auto bob = ray::Actor(PingPong, 2).Remote(0);
 
     ray::Task(PingPong::RegisterPartner, alice, bob).Remote();
     ray::Task(PingPong::RegisterPartner, bob, alice).Remote();
