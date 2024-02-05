@@ -4,14 +4,13 @@
 #include <chrono>
 
 class PingPong {
-    int ping_count;
+    int ping_count = 0;
     int rank;
 
 public:
     ray::ActorHandle<PingPong> partner;
 
     PingPong(int rank_input){
-        ping_count = 0;
         rank = rank_input;
     }
 
