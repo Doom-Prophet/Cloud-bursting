@@ -16,7 +16,7 @@ public:
     }
 
     PingPong *CreatePlayer(int rank_input){
-        return new Pingpong(rank_input);
+        return new PingPong(rank_input);
     }
 
     static void RegisterPartner(ray::ActorHandle<PingPong>& self, ray::ActorHandle<PingPong>& partner) {
