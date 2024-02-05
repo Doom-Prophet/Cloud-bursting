@@ -15,9 +15,7 @@ public:
         rank = rank_input;
     }
 
-    PingPong *CreatePlayer(int rank_input){
-        return new PingPong(rank_input);
-    }
+    
 
     static void RegisterPartner(ray::ActorHandle<PingPong>& self, ray::ActorHandle<PingPong>& partner) {
         self->registerPartner(partner);
@@ -54,7 +52,11 @@ public:
     }
 };
 
-RAY_REMOTE(PingPong::RegisterPartner, PingPong::Ping, PingPong::Pong);
+PingPong *CreatePlayer(int rank_input){
+        return new PingPong(rank_input);
+    }
+
+RAY_REMOTE(CreatePlayer, &PingPong::RegisterPartner, &PingPong::Ping, &PingPong::Pong);
 
 int main(int argc, char **argv) {
     ray::Init();
