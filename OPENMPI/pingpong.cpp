@@ -9,7 +9,7 @@ public:
     int rank;
     ray::ActorHandle<PingPong> partner;
 
-    CreatePlayer(int rank) : ping_count(0), rank(rank) {}
+    PingPong(int rank) : ping_count(0), rank(rank) {}
 
     static void RegisterPartner(ray::ActorHandle<PingPong>& self, ray::ActorHandle<PingPong>& partner) {
         self->registerPartner(partner);
@@ -49,8 +49,8 @@ RAY_REMOTE(PingPong::RegisterPartner, PingPong::Ping, PingPong::Pong);
 int main(int argc, char **argv) {
     ray::Init();
 
-    auto alice = ray::Actor(PingPong::CreatePlayer, 1).Remote();
-    auto bob = ray::Actor(PingPong::CreatePlayer, 2).Remote();
+    auto alice = ray::Actor(PingPong, 1).Remote();
+    auto bob = ray::Actor(PingPong, 2).Remote();
 
     ray::Task(PingPong::RegisterPartner, alice, bob).Remote();
     ray::Task(PingPong::RegisterPartner, bob, alice).Remote();
