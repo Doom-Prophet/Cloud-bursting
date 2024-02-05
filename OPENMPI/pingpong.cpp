@@ -19,7 +19,7 @@ public:
         this->partner = partner;
     }
 
-    static ray::ObjectRef<void> Ping(ray::ActorHandle<PingPong>& self) {
+    static ray::ObjectRef<void> Ping(ray::ActorHandle<PingPong>& self, ray::ActorHandle<PingPong>& partner) {
         return self->ping();
     }
 
@@ -33,7 +33,7 @@ public:
         return ray::Nil();
     }
 
-    static ray::ObjectRef<void> Pong(ray::ActorHandle<PingPong>& self) {
+    static ray::ObjectRef<void> Pong(ray::ActorHandle<PingPong>& self, ray::ActorHandle<PingPong>& partner) {
         return self->pong();
     }
 
