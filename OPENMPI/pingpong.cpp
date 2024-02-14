@@ -19,22 +19,22 @@ public:
         return 0;
     }
     
-    int Ping() {
+    auto Ping() {
         ping_count++;
         if (ping_count < 2) {
             std::cout << "Ping from rank " << rank << std::endl;
-        // std::this_thread::sleep_for(std::chrono::seconds(1));
-        // partner.Task(&PingPong::Pong).Remote();
-            return partner.Task(&PingPong::Pong).Remote();
+            // std::this_thread::sleep_for(std::chrono::seconds(1));
+            partner.Task(&PingPong::Pong).Remote();
+            // return partner.Task(&PingPong::Pong).Remote();
         }
         return 0;
     }
 
-    int Pong() {
+    auto Pong() {
         std::cout << "Pong from rank " << rank << std::endl;
         // std::this_thread::sleep_for(std::chrono::seconds(1));
-        // partner.Task(&PingPong::Ping).Remote();
-        return partner.Task(&PingPong::Ping).Remote();
+        partner.Task(&PingPong::Ping).Remote();
+        // return partner.Task(&PingPong::Ping).Remote();
         // return 0;
     }
 
