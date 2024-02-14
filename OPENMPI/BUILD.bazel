@@ -1,10 +1,10 @@
 cc_binary(
-    name = "example",
+    name = "pingpong",
     srcs = glob([
         "*.cc",
     ]),
     data = [
-        "example.so",
+        "pingpong.so",
     ],
     linkstatic = True,
     deps = [
@@ -13,7 +13,7 @@ cc_binary(
 )
 
 cc_binary(
-    name = "example.so",
+    name = "pingpong.so",
     srcs = glob([
         "*.cc",
     ]),
