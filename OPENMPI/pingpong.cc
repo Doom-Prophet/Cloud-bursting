@@ -52,7 +52,7 @@ PingPong *CreatePlayer(int rank_input){
 RAY_REMOTE(CreatePlayer, &PingPong::RegisterPartner, &PingPong::Ping, &PingPong::Pong, &PingPong::Test);
 
 int main(int argc, char **argv) {
-    int ping_count = 0;
+    // int ping_count = 0;
 
     ray::Init();
 
@@ -72,14 +72,14 @@ int main(int argc, char **argv) {
 
     printf("Checkpoint 6");
     
-    auto res1 = ray::Get(alice.Task(&PingPong::Ping).Remote());
-    while(res1 != NULL){
-        // ping_count++;
-        auto res1 = ray::Get(alice.Task(&PingPong::Ping).Remote());
-        // auto res2 = ray::Get(bob.Task(&PingPong::Pong).Remote());
-    }
+    // auto res1 = ray::Get(alice.Task(&PingPong::Ping).Remote());
+    // while(res1 != NULL){
+    //     // ping_count++;
+    //     auto res1 = ray::Get(alice.Task(&PingPong::Ping).Remote());
+    //     // auto res2 = ray::Get(bob.Task(&PingPong::Pong).Remote());
+    // }
 
-    printf("Checkpoint 7");
+    // printf("Checkpoint 7");
 
     // ray::Shutdown();
     return 0;
