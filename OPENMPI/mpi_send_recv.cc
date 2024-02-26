@@ -86,7 +86,8 @@ RAY_REMOTE(&MPI_Worker::CreateWorker, &MPI_Worker::MPI_Comm_rank, &MPI_Worker::M
 int main(int argc, char** argv) {
 
   // Initialization
-  auto workers = MPI_Init(argv[3]);
+  // auto workers = MPI_Init(argv[3]);
+  auto workers = MPI_Init(2);
 
   // Access each player using the vector index
   // auto player1 = players[0];
