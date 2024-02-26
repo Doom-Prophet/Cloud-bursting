@@ -1,10 +1,10 @@
 cc_binary(
-    name = "pingpong",
+    name = "mpi_send_recv",
     srcs = glob([
         "*.cc",
     ]),
     data = [
-        "pingpong.so",
+        "mpi_send_recv.so",
     ],
     linkstatic = True,
     deps = [
@@ -13,7 +13,7 @@ cc_binary(
 )
 
 cc_binary(
-    name = "pingpong.so",
+    name = "mpi_send_recv.so",
     srcs = glob([
         "*.cc",
     ]),
