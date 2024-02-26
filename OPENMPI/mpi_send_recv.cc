@@ -38,7 +38,7 @@ public:
       return result;
     }
 
-    MPI_Worker *CreateWorker(int rank_input, int size){
+    static MPI_Worker *CreateWorker(int rank_input, int size){
       return new MPI_Worker(rank_input, size);
     }
 };
