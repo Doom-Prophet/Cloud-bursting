@@ -79,7 +79,7 @@ auto MPI_Recv(std::vector<ray::ActorHandle<MPI_Worker>> workers, int source, aut
   return *(ray::Get(workers[source].Task(&MPI_Worker::Recv).Remote(obj_ref)));
 }
 
-RAY_REMOTE(&MPI_Worker::CreateWorker, &MPI_Worker::MPI_Comm_rank, &MPI_Worker::MPI_Comm_size, &MPI_Worker::Send, &MPI_Worker::Recv);
+RAY_REMOTE(MPI_Worker::CreateWorker, &MPI_Worker::MPI_Comm_rank, &MPI_Worker::MPI_Comm_size, &MPI_Worker::Send, &MPI_Worker::Recv);
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -93,7 +93,7 @@ int main(int argc, char** argv) {
   // auto player1 = players[0];
   // auto player2 = players[1];
 
-  if (workers[0].MPI_Comm_size() < 2) {
+  if (ray::Get(workers[0].MPI_Comm_size.remote()) < 2) {
     MPI_Abort(1);
   }
 
