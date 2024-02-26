@@ -49,7 +49,7 @@ std::vector<ray::ActorHandle<MPI_Worker>> MPI_Init(int size){
 
     std::vector<ray::ActorHandle<MPI_Worker>> workers;
     for (int i = 0; i < size; ++i) {
-        auto worker = ray::Actor(CreateWorker).Remote(i + 1, size);
+        ray::ActorHandle<MPI_Worker> worker = ray::Actor(MPI_Worker::CreateWorker).Remote(i + 1, size);
         workers.push_back(worker);
     }
     return workers;
