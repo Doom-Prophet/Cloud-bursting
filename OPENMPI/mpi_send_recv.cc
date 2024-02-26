@@ -93,7 +93,7 @@ int main(int argc, char** argv) {
   // auto player1 = players[0];
   // auto player2 = players[1];
 
-  if (ray::Get(workers[0].MPI_Comm_size.remote()) < 2) {
+  if (*(ray::Get(workers[0].Task(&MPI_Worker::MPI_Comm_size).remote())) < 2) {
     MPI_Abort(1);
   }
 
