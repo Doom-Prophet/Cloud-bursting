@@ -30,12 +30,16 @@ public:
 
     auto Send(const void *buf){
       auto obj_ref = ray::Put(buf);
-      return obj_ref
+      return obj_ref;
     }
 
     auto Recv(auto obj_ref){
       auto result = ray::Get(obj_ref);
-      return result
+      return result;
+    }
+
+    MPI_Worker *CreateWorker(int rank_input, int size){
+      return new MPI_Worker(rank_input, size);
     }
 };
 
@@ -61,6 +65,8 @@ int MPI_Abort(int errorcode){
   if(errorcode==1){
     std::cout << "Wrong world size" << std::endl;
   }
+  std::cout << "Unknown bug code" << std::endl;
+  return 0;
 }
 
 // int MPI_Send(const void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm);
@@ -73,11 +79,7 @@ auto MPI_Recv(std::vector<ray::ActorHandle<MPI_Worker>> workers, int source, aut
   return *(ray::Get(workers[source].Task(&MPI_Worker::Recv).Remote(obj_ref)));
 }
 
-MPI_Worker *CreateWorker(int rank_input, int size){
-  return new MPI_Worker(rank_input, size);
-}
-
-RAY_REMOTE(CreateWorker, &MPI_Worker::MPI_Comm_rank, &MPI_Worker::MPI_Comm_size, &MPI_Worker::Send, &MPI_Worker::Recv);
+RAY_REMOTE(&MPI_Worker::CreateWorker, &MPI_Worker::MPI_Comm_rank, &MPI_Worker::MPI_Comm_size, &MPI_Worker::Send, &MPI_Worker::Recv);
 
 //////////////////////////////////////////////////////////////////////////
 
