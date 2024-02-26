@@ -79,7 +79,8 @@ auto MPI_Recv(std::vector<ray::ActorHandle<MPI_Worker>> workers, int source, aut
   return *(ray::Get(workers[source].Task(&MPI_Worker::Recv).Remote(obj_ref)));
 }
 
-RAY_REMOTE(MPI_Worker::CreateWorker, &MPI_Worker::MPI_Comm_rank, &MPI_Worker::MPI_Comm_size, &MPI_Worker::Send, &MPI_Worker::Recv);
+// RAY_REMOTE(MPI_Worker::CreateWorker, &MPI_Worker::MPI_Comm_rank, &MPI_Worker::MPI_Comm_size, &MPI_Worker::Send, &MPI_Worker::Recv);
+RAY_REMOTE(MPI_Worker::CreateWorker, &MPI_Worker::Send, &MPI_Worker::Recv);
 // RAY_REMOTE(MPI_Worker::CreateWorker);
 // RAY_REMOTE(&MPI_Worker::MPI_Comm_rank);
 // RAY_REMOTE(&MPI_Worker::MPI_Comm_size);
