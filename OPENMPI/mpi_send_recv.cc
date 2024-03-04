@@ -49,7 +49,7 @@ public:
 
 std::vector<ray::ActorHandle<MPI_Worker>> workers;
 
-std::map<std::tuple<int, int>, ray::ObjectRef> obj_refs_map;
+std::map<int, *ray::ObjectRef> obj_refs_map;
 
 int MPI_Init(int *argc, char ***argv){
 // std::vector<ray::ActorHandle<MPI_Worker>> MPI_Init(int size){
@@ -82,15 +82,14 @@ int MPI_Abort(MPI_Comm comm, int errorcode){
 int MPI_Send(const void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm){
 // auto MPI_Send(std::vector<ray::ActorHandle<MPI_Worker>> workers, int source, const void *buf){
   auto obj_ref = workers[source].Task(&MPI_Worker::Send).Remote(buf);
-  auto myTuple = std::make_tuple(count, tag);
-  obj_refs_map[myTuple] = obj_ref;
+  obj_refs_map[count] = &obj_ref;
   return 0;
 }
 
 auto MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Status *status) {
-    auto key = std::make_tuple(count, tag);
-    if (obj_refs_map.find(key) != obj_refs_map.end()) {
-        auto obj_ref = obj_refs_map[key];
+    // Make this into a loop, keep waiting for valid obj_ref
+    if (obj_refs_map.find(count) != obj_refs_map.end()) {
+        auto &obj_ref = *obj_refs_map[key];
         auto result = *(ray::Get(workers[source].Task(&MPI_Worker::Recv).Remote(obj_ref)));
         obj_refs_map.erase(key);
         return result;
