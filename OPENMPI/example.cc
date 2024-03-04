@@ -35,10 +35,16 @@ int main(int argc, char **argv) {
   /// initialization
   ray::Init();
 
+  std::unordered_map<std::string, int> testmap1;
+  testmap1["Bob"] = 25;
+  std::cout << "Bob: " << testmap1["Bob"] << std::endl;
+
   /// put and get object
-  std::unordered_map<std::string, ray::ObjectRef> testmap;
+  std::unordered_map<std::string, ray::ObjectRef> testmap2;
   auto object = ray::Put(100);
-  ageMap["Alice"] = object;
+  testmap2["Alice"] = object;
+  std::cout << "Alice: " << testmap2["Alice"] << std::endl;
+
   auto put_get_result = *(ray::Get(object));
   std::cout << "put_get_result = " << put_get_result << std::endl;
 
