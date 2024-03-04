@@ -49,7 +49,7 @@ public:
 
 std::vector<ray::ActorHandle<MPI_Worker>> workers;
 
-std::map<int, ray::ObjectRef*> obj_refs_map;
+std::map<int, ray::ObjectRef<void*>> obj_refs_map;
 
 int MPI_Init(int *argc, char ***argv){
 // std::vector<ray::ActorHandle<MPI_Worker>> MPI_Init(int size){
