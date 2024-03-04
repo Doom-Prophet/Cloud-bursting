@@ -82,7 +82,7 @@ int MPI_Abort(MPI_Comm comm, int errorcode){
 int MPI_Send(const void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm){
 // auto MPI_Send(std::vector<ray::ActorHandle<MPI_Worker>> workers, int source, const void *buf){
   auto obj_ref = workers[source].Task(&MPI_Worker::Send).Remote(buf);
-  obj_refs_map[count] = obj_ref;
+  obj_refs_map[count] = (void*)&obj_ref;
   return 0;
 }
 
