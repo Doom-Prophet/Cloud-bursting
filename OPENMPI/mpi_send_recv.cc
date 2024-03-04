@@ -23,7 +23,7 @@ public:
 
     int MPI_Comm_rank(MPI_Comm comm, int *rank){
     // int MPI_Comm_rank(MPI_Worker worker){
-      *rank = self.WorkerRank
+      *rank = WorkerRank;
       return 0;
     }
 
