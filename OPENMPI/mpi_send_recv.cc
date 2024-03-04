@@ -82,7 +82,8 @@ int MPI_Abort(MPI_Comm comm, int errorcode){
 int MPI_Send(const void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm){
 // auto MPI_Send(std::vector<ray::ActorHandle<MPI_Worker>> workers, int source, const void *buf){
   auto obj_ref = workers[source].Task(&MPI_Worker::Send).Remote(buf);
-  obj_refs_map[std::make_tuple(count, tag)] = obj_ref;
+  auto myTuple = std::make_tuple(count, tag);
+  obj_refs_map[myTuple] = obj_ref;
   return 0;
 }
 
