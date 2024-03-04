@@ -11,10 +11,6 @@
 #define MPI_Comm int
 #define MPI_Status int
 
-std::vector<ray::ActorHandle<MPI_Worker>> workers;
-
-std::map<std::tuple<int, int>, ray::ObjectRef> obj_refs_map;
-
 class MPI_Worker{
     int WorkerRank;
     int WorldSize;
@@ -50,6 +46,10 @@ public:
       return new MPI_Worker(rank_input, size);
     }
 };
+
+std::vector<ray::ActorHandle<MPI_Worker>> workers;
+
+std::map<std::tuple<int, int>, ray::ObjectRef> obj_refs_map;
 
 int MPI_Init(int *argc, char ***argv){
 // std::vector<ray::ActorHandle<MPI_Worker>> MPI_Init(int size){
