@@ -4,6 +4,9 @@
 
 /// including the `<ray/api.h>` header
 #include <ray/api.h>
+#include <iostream>
+#include <string>
+#include <unordered_map>
 
 /// common function
 int Plus(int x, int y) { return x + y; }
@@ -33,7 +36,9 @@ int main(int argc, char **argv) {
   ray::Init();
 
   /// put and get object
+  std::unordered_map<std::string, ray::ObjectRef> testmap;
   auto object = ray::Put(100);
+  ageMap["Alice"] = object;
   auto put_get_result = *(ray::Get(object));
   std::cout << "put_get_result = " << put_get_result << std::endl;
 
