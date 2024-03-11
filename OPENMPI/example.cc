@@ -47,10 +47,14 @@ int main(int argc, char **argv) {
   // std::cout << "Alice: " << testmap2["Alice"] << std::endl;
 
   std::vector<ray::ObjectRef<int>> obj_refs;
-  obj_refs.emplace_back(ray::Put(100));
+  for (int i = 0; i < 3; i++) {
+    obj_refs.emplace_back(ray::Put(i));
+  }
   auto results = ray::Get(obj_refs);
-  std::cout << "Result: " << results << std::endl;
-
+  assert(results.size() == 3);
+  assert(*results[0] == 0);
+  assert(*results[1] == 1);
+  assert(*results[2] == 2);
 
   auto put_get_result = *(ray::Get(object));
   std::cout << "put_get_result = " << put_get_result << std::endl;
