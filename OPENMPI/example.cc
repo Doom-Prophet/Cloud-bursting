@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
   std::cout << "Bob: " << testmap1["Bob"] << std::endl;
 
   //  put and get object
-  std::unordered_map<std::string, ray::ObjectRef> testmap2;
+  std::unordered_map<std::string, ray::ObjectRef<int>> testmap2;
   // std::cout << "The type of 1 is: " << typeid(1).name() << std::endl;
   // std::cout << "The type of 'Bob' is: " << typeid("Bob").name() << std::endl;
   auto object = ray::Put(100);
