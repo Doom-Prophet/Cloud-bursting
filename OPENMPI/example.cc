@@ -41,13 +41,16 @@ int main(int argc, char **argv) {
   std::cout << "Bob: " << testmap1["Bob"] << std::endl;
 
   //  put and get object
-  std::unordered_map<std::string, ray::ObjectRef<int>> testmap2;
-  // std::cout << "The type of 1 is: " << typeid(1).name() << std::endl;
-  // std::cout << "The type of 'Bob' is: " << typeid("Bob").name() << std::endl;
-  auto object = ray::Put(100);
-  // std::cout << "The type of ObjectRef is: " << typeid(object).name() << std::endl;
-  testmap2["Alice"] = object;
-  std::cout << "Alice: " << testmap2["Alice"] << std::endl;
+  // std::unordered_map<std::string, ray::ObjectRef<int>> testmap2;
+  // auto object = ray::Put(100);
+  // testmap2["Alice"] = object;
+  // std::cout << "Alice: " << testmap2["Alice"] << std::endl;
+
+  std::vector<ray::ObjectRef<int>> obj_refs;
+  obj_refs.emplace_back(ray::Put(100));
+  auto results = ray::Get(obj_refs);
+  std::cout << "Result: " << results << std::endl;
+
 
   auto put_get_result = *(ray::Get(object));
   std::cout << "put_get_result = " << put_get_result << std::endl;
