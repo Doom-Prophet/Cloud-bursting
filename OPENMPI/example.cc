@@ -51,8 +51,10 @@ int main(int argc, char **argv) {
   std::cout << "Checkpoint 1" << std::endl;
   obj_refs.emplace_back(ray::Put(100));
   std::cout << "Checkpoint 2" << std::endl;
-  auto results = ray::Get(obj_refs[0]);
-  std::cout << "Result: " << results << std::endl;
+  for(const auto& obj_ref : obj_refs) {
+    int value = *ray::Get(obj_ref);
+    std::cout << "Value:" << value << std::endl;
+  }
 
   // auto put_get_result = *(ray::Get(object));
   // std::cout << "put_get_result = " << put_get_result << std::endl;
