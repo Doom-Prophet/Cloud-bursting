@@ -36,11 +36,11 @@ int main(int argc, char **argv) {
   /// initialization
   ray::Init();
 
-  std::unordered_map<std::string, int> testmap1;
-  testmap1["Bob"] = 25;
-  std::cout << "Bob: " << testmap1["Bob"] << std::endl;
+  /// put and get object
+  auto object = ray::Put(100);
+  auto put_get_result = *(ray::Get(object));
+  std::cout << "put_get_result = " << put_get_result << std::endl;
 
-  //  put and get object
   // std::unordered_map<std::string, ray::ObjectRef<int>> testmap2;
   // auto object = ray::Put(100);
   // testmap2["Alice"] = object;
@@ -58,11 +58,9 @@ int main(int argc, char **argv) {
     // std::cout << "obj_ref:" << obj_ref << std::endl;
     std::cout << "type of obj_ref:" << typeid(obj_ref).name() << std::endl;
     auto value = obj_ref.Get();
+    // auto value = ray::Get(obj_ref);
     std::cout << "Value:" << value << std::endl;
   }
-
-  // auto put_get_result = *(ray::Get(object));
-  // std::cout << "put_get_result = " << put_get_result << std::endl;
 
   /// common task
   auto task_object = ray::Task(Plus).Remote(1, 2);
