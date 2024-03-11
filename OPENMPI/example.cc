@@ -7,6 +7,7 @@
 #include <iostream>
 #include <string>
 #include <unordered_map>
+#include <typeinfo>
 
 /// common function
 int Plus(int x, int y) { return x + y; }
@@ -35,15 +36,18 @@ int main(int argc, char **argv) {
   /// initialization
   ray::Init();
 
-  std::unordered_map<std::string, int> testmap1;
-  testmap1["Bob"] = 25;
-  std::cout << "Bob: " << testmap1["Bob"] << std::endl;
+  // std::unordered_map<std::string, int> testmap1;
+  // testmap1["Bob"] = 25;
+  // std::cout << "Bob: " << testmap1["Bob"] << std::endl;
 
   /// put and get object
-  std::unordered_map<std::string, ray::ObjectRef> testmap2;
+  // std::unordered_map<std::string, ray::ObjectRef> testmap2;
+  std::cout << "The type of 1 is: " << typeid(1).name() << std::endl;
+  std::cout << "The type of 'Bob' is: " << typeid("Bob").name() << std::endl;
   auto object = ray::Put(100);
-  testmap2["Alice"] = object;
-  std::cout << "Alice: " << testmap2["Alice"] << std::endl;
+  std::cout << "The type of ObjectRef is: " << typeid(object).name() << std::endl;
+  // testmap2["Alice"] = object;
+  // std::cout << "Alice: " << testmap2["Alice"] << std::endl;
 
   auto put_get_result = *(ray::Get(object));
   std::cout << "put_get_result = " << put_get_result << std::endl;
