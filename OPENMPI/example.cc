@@ -56,8 +56,8 @@ int main(int argc, char **argv) {
   assert(*results[1] == 1);
   assert(*results[2] == 2);
 
-  auto put_get_result = *(ray::Get(object));
-  std::cout << "put_get_result = " << put_get_result << std::endl;
+  // auto put_get_result = *(ray::Get(object));
+  // std::cout << "put_get_result = " << put_get_result << std::endl;
 
   /// common task
   auto task_object = ray::Task(Plus).Remote(1, 2);
