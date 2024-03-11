@@ -46,10 +46,11 @@ int main(int argc, char **argv) {
   // testmap2["Alice"] = object;
   // std::cout << "Alice: " << testmap2["Alice"] << std::endl;
 
+  std::cout << "Checkpoint 0" << std::endl;
   std::vector<ray::ObjectRef<int>> obj_refs;
-  for (int i = 0; i < 3; i++) {
-    obj_refs.emplace_back(ray::Put(i));
-  }
+  std::cout << "Checkpoint 1" << std::endl;
+  obj_refs.emplace_back(ray::Put(100));
+  std::cout << "Checkpoint 2" << std::endl;
   auto results = ray::Get(obj_refs);
   std::cout << "Result: " << *results[0] << std::endl;
 
