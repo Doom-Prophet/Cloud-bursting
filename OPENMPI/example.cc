@@ -52,6 +52,8 @@ int main(int argc, char **argv) {
   obj_refs.emplace_back(ray::Put(100));
   std::cout << "Checkpoint 2" << std::endl;
   for(const auto& obj_ref : obj_refs) {
+    std::cout << "obj_ref:" << obj_ref << std::endl;
+    std::cout << "type of obj_ref:" << typeid(obj_ref).name() << std::endl;
     int value = *ray::Get(obj_ref);
     std::cout << "Value:" << value << std::endl;
   }
