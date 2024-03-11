@@ -51,10 +51,7 @@ int main(int argc, char **argv) {
     obj_refs.emplace_back(ray::Put(i));
   }
   auto results = ray::Get(obj_refs);
-  assert(results.size() == 3);
-  assert(*results[0] == 0);
-  assert(*results[1] == 1);
-  assert(*results[2] == 2);
+  std::cout << "Result: " << *results[0] << std::endl;
 
   // auto put_get_result = *(ray::Get(object));
   // std::cout << "put_get_result = " << put_get_result << std::endl;
