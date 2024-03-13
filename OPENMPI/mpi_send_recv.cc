@@ -58,8 +58,8 @@ std::vector<ray::ObjectRef<std::string>> obj_refs_str;
 
 int MPI_Init(int *argc, char ***argv){
 // std::vector<ray::ActorHandle<MPI_Worker>> MPI_Init(int size){
-    // int size = argv[3];
-    int size = 2;
+    int size = atoi(argv[1]);
+    // int size = 2;
     ray::Init();
     
     for (int i = 0; i < size; ++i) {
@@ -136,9 +136,9 @@ int main(int argc, char** argv) {
   auto workers = MPI_Init(argc,argv);
   // auto workers = MPI_Init(2);
 
-  if (*(ray::Get(workers[0].Task(&MPI_Worker::MPI_Comm_size).Remote())) < 2) {
-    MPI_Abort(1);
-  }
+  // if (*(ray::Get(workers[0].Task(&MPI_Worker::MPI_Comm_size).Remote())) < 2) {
+  //   MPI_Abort(1);
+  // }
 
   int cnt = strlen("Hello world");
   int tag = 1;
