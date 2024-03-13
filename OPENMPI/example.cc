@@ -59,7 +59,7 @@ int main(int argc, char **argv) {
     }
     // std::cout << "obj_ref:" << obj_ref << std::endl;
     std::cout << "type of obj_ref:" << typeid(obj_ref).name() << std::endl;
-    auto value = obj_ref.Get();
+    auto value = *(ray::Get(obj_ref));
     // auto value = ray::Get(obj_ref);
     std::cout << "Value:" << value << std::endl;
   }
