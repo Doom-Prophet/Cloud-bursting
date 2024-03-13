@@ -49,7 +49,8 @@ int main(int argc, char **argv) {
   std::cout << "Checkpoint 0" << std::endl;
   std::vector<ray::ObjectRef<std::string>> obj_refs;
   std::cout << "Checkpoint 1" << std::endl;
-  auto object_test = ray::Put(std::string("Hi"));
+  std::string s = "Hi";
+  auto object_test = ray::Put(s);
   // obj_refs.emplace_back(ray::Put(100));
   obj_refs.push_back(object_test);
   std::cout << "Checkpoint 2" << std::endl;
