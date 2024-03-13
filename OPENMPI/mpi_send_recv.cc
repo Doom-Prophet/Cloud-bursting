@@ -90,7 +90,6 @@ int MPI_Send(const void *buf, int count, MPI_Datatype datatype, int source, int 
   // tag=-1 means error
   if (tag==-1){
     MPI_Abort(comm, 1);
-    break
   }
   // tag=0 means int
   if(tag==0){
@@ -108,7 +107,7 @@ auto MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, 
     while(true){
       if (tag==-1){
         MPI_Abort(comm, 1);
-        break
+        break;
       }
       if (tag==0) {
           auto &obj_ref = *obj_refs_int.front();
@@ -142,12 +141,12 @@ int main(int argc, char** argv) {
   }
 
   int cnt = strlen("Hello world");
-  int tag = 0;
+  int tag = 1;
   char stringToSend[] = "Hello world";
   char void_buf[];
 
-  int send_package = MPI_Send(stringToSend, cnt, datatype, 1, 0, comm);
-  auto recv_package = MPI_Recv(void_buf, cnt, datatype, 2, 0, comm, status);
+  int send_package = MPI_Send(stringToSend, cnt, datatype, 1, tag, comm);
+  auto recv_package = MPI_Recv(void_buf, cnt, datatype, 2, tag, comm, status);
   std::cout << "recv_package = " << recv_package << std::endl;
 
   // Following parts not yet updated!
