@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <string>
 #include <ray/api.h>
 #include <vector>
 
@@ -49,7 +50,11 @@ public:
 
 std::vector<ray::ActorHandle<MPI_Worker>> workers;
 
-std::map<int, ray::ObjectRef<void*>> obj_refs_map;
+std::vector<ray::ObjectRef<int>> obj_refs_int;
+
+std::vector<ray::ObjectRef<std::string>> obj_refs_str;
+
+// std::map<int, ray::ObjectRef<void*>> obj_refs_map;
 
 int MPI_Init(int *argc, char ***argv){
 // std::vector<ray::ActorHandle<MPI_Worker>> MPI_Init(int size){
@@ -82,21 +87,41 @@ int MPI_Abort(MPI_Comm comm, int errorcode){
 int MPI_Send(const void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm){
 // auto MPI_Send(std::vector<ray::ActorHandle<MPI_Worker>> workers, int source, const void *buf){
   auto obj_ref = workers[source].Task(&MPI_Worker::Send).Remote(buf);
-  obj_refs_map[count] = (void*)obj_ref;
+  // tag=-1 means error
+  if (tag==-1){
+    MPI_Abort(comm, 1);
+    break
+  }
+  // tag=0 means int
+  if(tag==0){
+    obj_refs_int.push_back(obj_ref);
+  }
+  // tag=1 means string
+  if(tag==1){
+    obj_refs_str.push_back(obj_ref);
+  }
   return 0;
 }
 
 auto MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Status *status) {
     // Make this into a loop, keep waiting for valid obj_ref
-    if (obj_refs_map.find(count) != obj_refs_map.end()) {
-        auto &obj_ref = *obj_refs_map[key];
-        auto result = *(ray::Get(workers[source].Task(&MPI_Worker::Recv).Remote(obj_ref)));
-        obj_refs_map.erase(key);
-        return result;
+    while(true){
+      if (tag==-1){
+        MPI_Abort(comm, 1);
+        break
+      }
+      if (tag==0) {
+          auto &obj_ref = *obj_refs_int.front();
+          obj_refs_int.erase(obj_refs_int.begin());
+      }
+      if (tag==1){
+          auto &obj_ref = *obj_refs_str.front();
+          obj_refs_str.erase(obj_refs_str.begin());
+      }
+      auto result = *(ray::Get(workers[source].Task(&MPI_Worker::Recv).Remote(obj_ref)));
+      return result;
     }
-    else{
-      MPI_Abort(comm, 1);
-    }
+    return -1;
 }
 
 RAY_REMOTE(MPI_Worker::CreateWorker, &MPI_Worker::MPI_Comm_rank, &MPI_Worker::MPI_Comm_size, &MPI_Worker::Send, &MPI_Worker::Recv);
