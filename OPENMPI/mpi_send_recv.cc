@@ -58,7 +58,7 @@ std::vector<ray::ObjectRef<std::string>> obj_refs_str;
 
 int MPI_Init(int *argc, char ***argv){
 // std::vector<ray::ActorHandle<MPI_Worker>> MPI_Init(int size){
-    int size = atoi(argv[1]);
+    int size = atoi(*argv[1]);
     // int size = 2;
     ray::Init();
     
