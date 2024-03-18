@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
   // std::cout << "Alice: " << testmap2["Alice"] << std::endl;
 
   std::cout << "Checkpoint 0" << std::endl;
-  std::vector<std::string> stringToSend[] = "Hello world";
+  std::vector<std::string> stringToSend = {"Hello world"};
   auto object_test = ray::Put(stringToSend);
   std::cout << "Checkpoint 1" << std::endl;
   std::cout << "type of object_test:" << typeid(object_test).name() << std::endl;
