@@ -34,7 +34,7 @@ public:
     }
 
     auto Send(const void *buf){
-      auto obj_ref = ray::Put(buf);
+      auto obj_ref = ray::Put(a);
       return obj_ref;
     }
 
@@ -50,9 +50,9 @@ public:
 
 std::vector<ray::ActorHandle<MPI_Worker>> workers;
 
-std::vector<ray::ObjectRef<int>> obj_refs_int;
+std::vector<ray::ObjectRef<std::vector<int>>> obj_refs_int;
 
-std::vector<ray::ObjectRef<std::string>> obj_refs_str;
+std::vector<ray::ObjectRef<std::vector<std::string>>> obj_refs_str;
 
 // std::map<int, ray::ObjectRef<void*>> obj_refs_map;
 
@@ -104,21 +104,42 @@ int MPI_Send(const void *buf, int count, MPI_Datatype datatype, int source, int 
 
 auto MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Status *status) {
     // Make this into a loop, keep waiting for valid obj_ref
+    
     while(true){
       if (tag==-1){
         MPI_Abort(comm, 1);
         break;
       }
+
       if (tag==0) {
-          auto &obj_ref = *obj_refs_int.front();
+          std::vector<int> recv_buf[];
+          auto &objectList = *obj_refs_int.front();
           obj_refs_int.erase(obj_refs_int.begin());
+
+          for(const auto& obj_ref : objectList) {
+            auto value = *(ray::Get(workers[source].Task(&MPI_Worker::Recv).Remote(obj_ref)));
+            for(const auto& integer : value) {
+              std::cout << integer << std::endl;
+              recv_buf.push_back(integer);
+            }
+          }
+          return recv_buf;
       }
+
       if (tag==1){
-          auto &obj_ref = *obj_refs_str.front();
+          std::vector<std::string> recv_buf[];
+          auto &objectList = *obj_refs_str.front();
           obj_refs_str.erase(obj_refs_str.begin());
+
+          for(const auto& obj_ref : objectList) {
+            auto value = *(ray::Get(workers[source].Task(&MPI_Worker::Recv).Remote(obj_ref)));
+            for(const auto& str : value) {
+              std::cout << str << std::endl;
+              recv_buf.push_back(str);
+            }
+          }
+          return recv_buf;
       }
-      auto result = *(ray::Get(workers[source].Task(&MPI_Worker::Recv).Remote(obj_ref)));
-      return result;
     }
     return -1;
 }
@@ -142,8 +163,8 @@ int main(int argc, char** argv) {
 
   int cnt = strlen("Hello world");
   int tag = 1;
-  char stringToSend[] = "Hello world";
-  char void_buf[];
+  std::vector<std::string> stringToSend = {"Hello","I'm","Zicheng Ma","Nice to meet you!"};
+  std::vector<std::string> void_buf[];
 
   int send_package = MPI_Send(stringToSend, cnt, datatype, 1, tag, comm);
   auto recv_package = MPI_Recv(void_buf, cnt, datatype, 2, tag, comm, status);
