@@ -68,7 +68,7 @@ int main(int argc, char **argv) {
 
   auto value = ray::Get(object_test);
   // auto value = ray::Get(obj_ref);
-  std::cout << "Value:" << (*value)[0] << std::endl;
+  std::cout << "Value:" << value.get()[0] << std::endl;
 
   /// common task
   auto task_object = ray::Task(Plus).Remote(1, 2);
