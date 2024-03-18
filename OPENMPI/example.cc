@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
   // std::cout << "Alice: " << testmap2["Alice"] << std::endl;
 
   std::cout << "Checkpoint 0" << std::endl;
-  char stringToSend[] = "Hello world";
+  std::vector<std::string> stringToSend[] = "Hello world";
   auto object_test = ray::Put(stringToSend);
   std::cout << "Checkpoint 1" << std::endl;
   std::cout << "type of object_test:" << typeid(object_test).name() << std::endl;
@@ -66,9 +66,9 @@ int main(int argc, char **argv) {
   //   std::cout << "Value:" << value[0] << std::endl;
   // }
 
-  auto value = ray::Get(object_test);
+  auto value = *(ray::Get(object_test));
   // auto value = ray::Get(obj_ref);
-  std::cout << "Value:" << value.get()[0] << std::endl;
+  std::cout << "Value:" << value[0] << std::endl;
 
   /// common task
   auto task_object = ray::Task(Plus).Remote(1, 2);
