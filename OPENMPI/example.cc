@@ -66,7 +66,7 @@ int main(int argc, char **argv) {
   //   std::cout << "Value:" << value[0] << std::endl;
   // }
 
-  auto value = *(ray::Get(obj_ref));
+  auto value = *(ray::Get(object_test));
   // auto value = ray::Get(obj_ref);
   std::cout << "Value:" << value[0] << std::endl;
 
