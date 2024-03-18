@@ -62,7 +62,7 @@ int main(int argc, char **argv) {
     std::cout << "type of obj_ref:" << typeid(obj_ref).name() << std::endl;
     auto value = *(ray::Get(obj_ref));
     // auto value = ray::Get(obj_ref);
-    std::cout << "Value:" << value << std::endl;
+    std::cout << "Value:" << value[0] << std::endl;
   }
 
   /// common task
