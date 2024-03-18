@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
   // std::cout << "Alice: " << testmap2["Alice"] << std::endl;
 
   std::cout << "Checkpoint 0" << std::endl;
-  std::vector<ray::ObjectRef<std::vector<char>>> obj_refs;
+  std::vector<ray::ObjectRef<std::vector<std::string>>> obj_refs;
   std::cout << "Checkpoint 1" << std::endl;
   char stringToSend[] = "Hello world";
   auto object_test = ray::Put(stringToSend);
