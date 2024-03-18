@@ -34,7 +34,7 @@ public:
     }
 
     auto Send(const void *buf){
-      auto obj_ref = ray::Put(a);
+      auto obj_ref = ray::Put(buf);
       return obj_ref;
     }
 
