@@ -85,13 +85,14 @@ int MPI_Abort(MPI_Comm comm, int errorcode){
 }
 
 template<typename T>
-int MPI_Send(const std::vector<T>& buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm){
+int MPI_Send(std::vector<T>& buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm){
     MPI_Abort(comm, 1);
+    return 0;
 }
 
 // Specialization for std::vector<int>
 template<>
-int MPI_Send(const std::vector<int>& buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm){
+int MPI_Send(std::vector<int>& buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm){
     // Logic for handling std::vector<int>
     auto obj_ref = workers[source].Task(&MPI_Worker::Send).Remote(buf);
     // tag=-1 means error
@@ -112,7 +113,7 @@ int MPI_Send(const std::vector<int>& buf, int count, MPI_Datatype datatype, int 
 
 // Specialization for std::vector<std::string>
 template<>
-int MPI_Send(const std::vector<std::string>& buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm){
+int MPI_Send(std::vector<std::string>& buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm){
     // Logic for handling std::vector<std::string>
     auto obj_ref = workers[source].Task(&MPI_Worker::Send).Remote(buf);
     // tag=-1 means error
