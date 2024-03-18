@@ -163,8 +163,8 @@ auto MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, 
       }
 
       if (tag==0) {
-          std::vector<int> recv_buf[];
-          auto &objectList = *obj_refs_int.front();
+          std::vector<int> recv_buf;
+          auto objectList = obj_refs_int.front();
           obj_refs_int.erase(obj_refs_int.begin());
 
           for(const auto& obj_ref : objectList) {
@@ -178,7 +178,7 @@ auto MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, 
       }
 
       if (tag==1){
-          std::vector<std::string> recv_buf[];
+          std::vector<std::string> recv_buf;
           auto &objectList = *obj_refs_str.front();
           obj_refs_str.erase(obj_refs_str.begin());
 
