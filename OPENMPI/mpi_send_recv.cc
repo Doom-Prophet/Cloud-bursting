@@ -172,7 +172,7 @@ auto MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, 
           auto obj_ref = obj_refs_int.front();
           obj_refs_int.erase(obj_refs_int.begin());
 
-          auto value = *(ray::Get(workers[source].Task(&MPI_Worker::Recv_int).Remote(obj_ref)));
+          auto value = *(workers[source].Task(&MPI_Worker::Recv_int).Remote(obj_ref));
           for(const auto& integer : value) {
             std::cout << integer << std::endl;
             recv_buf.push_back(integer);
@@ -185,7 +185,7 @@ auto MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, 
           auto obj_ref = obj_refs_str.front();
           obj_refs_str.erase(obj_refs_str.begin());
 
-          auto value = *(ray::Get(workers[source].Task(&MPI_Worker::Recv_str).Remote(obj_ref)));
+          auto value = *(workers[source].Task(&MPI_Worker::Recv_str).Remote(obj_ref));
           for(const auto& str : value) {
             std::cout << str << std::endl;
             recv_buf.push_back(str);
