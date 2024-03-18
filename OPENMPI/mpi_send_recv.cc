@@ -105,13 +105,13 @@ int MPI_Send(std::vector<int>& buf, int count, MPI_Datatype datatype, int source
       MPI_Abort(comm, 1);
     }
     // tag=0 means int
-    if(tag==0){
-      obj_refs_int.push_back(obj_ref);
-    }
-    // tag=1 means string
-    if(tag==1){
-      obj_refs_str.push_back(obj_ref);
-    }
+    // if(tag==0){
+    //   obj_refs_int.push_back(obj_ref);
+    // }
+    // // tag=1 means string
+    // if(tag==1){
+    //   obj_refs_str.push_back(obj_ref);
+    // }
     return 0;
 }
 
@@ -125,13 +125,13 @@ int MPI_Send(std::vector<std::string>& buf, int count, MPI_Datatype datatype, in
       MPI_Abort(comm, 1);
     }
     // tag=0 means int
-    if(tag==0){
-      obj_refs_int.push_back(obj_ref);
-    }
-    // tag=1 means string
-    if(tag==1){
-      obj_refs_str.push_back(obj_ref);
-    }
+    // if(tag==0){
+    //   obj_refs_int.push_back(obj_ref);
+    // }
+    // // tag=1 means string
+    // if(tag==1){
+    //   obj_refs_str.push_back(obj_ref);
+    // }
     return 0;
 }
 
