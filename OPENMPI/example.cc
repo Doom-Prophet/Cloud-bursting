@@ -63,8 +63,6 @@ int main(int argc, char **argv) {
     }
   }
 
-  }
-
   /// common task
   auto task_object = ray::Task(Plus).Remote(1, 2);
   int task_result = *(ray::Get(task_object));
