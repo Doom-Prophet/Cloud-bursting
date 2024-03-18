@@ -29,6 +29,13 @@ class Counter {
     return count;
   }
 };
+
+auto test_send(std::vector<std::string>& buf){
+    auto object_test = ray::Put(buf);
+    std::cout << "Test 1:" << typeid(object_test).name() << std::endl;
+    return object_test;
+}
+
 /// Declare remote function
 RAY_REMOTE(Counter::FactoryCreate, &Counter::Add);
 
@@ -51,6 +58,9 @@ int main(int argc, char **argv) {
   auto object_test = ray::Put(stringToSend);
   std::cout << "Checkpoint 1" << std::endl;
   std::cout << "type of object_test:" << typeid(object_test).name() << std::endl;
+
+  auto temp_res = test_send(stringToSend);
+  std::cout << "Test 2:" << typeid(temp_res).name() << std::endl;
 
   std::vector<ray::ObjectRef<std::vector<std::string>>> objectList;
   objectList.push_back(object_test);
