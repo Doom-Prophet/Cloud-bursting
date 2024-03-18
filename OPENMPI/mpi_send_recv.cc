@@ -164,30 +164,26 @@ auto MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, 
 
       if (tag==0) {
           std::vector<int> recv_buf;
-          auto objectList = obj_refs_int.front();
+          auto obj_ref = obj_refs_int.front();
           obj_refs_int.erase(obj_refs_int.begin());
 
-          for(const auto& obj_ref : objectList) {
-            auto value = *(ray::Get(workers[source].Task(&MPI_Worker::Recv).Remote(obj_ref)));
-            for(const auto& integer : value) {
-              std::cout << integer << std::endl;
-              recv_buf.push_back(integer);
-            }
+          auto value = *(ray::Get(workers[source].Task(&MPI_Worker::Recv).Remote(obj_ref)));
+          for(const auto& integer : value) {
+            std::cout << integer << std::endl;
+            recv_buf.push_back(integer);
           }
           return recv_buf;
       }
 
       if (tag==1){
           std::vector<std::string> recv_buf;
-          auto &objectList = *obj_refs_str.front();
+          auto obj_ref = obj_refs_str.front();
           obj_refs_str.erase(obj_refs_str.begin());
 
-          for(const auto& obj_ref : objectList) {
-            auto value = *(ray::Get(workers[source].Task(&MPI_Worker::Recv).Remote(obj_ref)));
-            for(const auto& str : value) {
-              std::cout << str << std::endl;
-              recv_buf.push_back(str);
-            }
+          auto value = *(ray::Get(workers[source].Task(&MPI_Worker::Recv).Remote(obj_ref)));
+          for(const auto& str : value) {
+            std::cout << str << std::endl;
+            recv_buf.push_back(str);
           }
           return recv_buf;
       }
