@@ -47,11 +47,12 @@ int main(int argc, char **argv) {
   // std::cout << "Alice: " << testmap2["Alice"] << std::endl;
 
   std::cout << "Checkpoint 0" << std::endl;
-  std::vector<ray::ObjectRef<std::vector<std::string>>> obj_refs;
-  std::cout << "Checkpoint 1" << std::endl;
   char stringToSend[] = "Hello world";
   auto object_test = ray::Put(stringToSend);
+  std::cout << "Checkpoint 1" << std::endl;
+  std::cout << "type of object_test:" << typeid(object_test).name() << std::endl;
   // obj_refs.emplace_back(ray::Put(100));
+  std::vector<ray::ObjectRef<std::vector<std::string>>> obj_refs;
   obj_refs.push_back(object_test);
   std::cout << "Checkpoint 2" << std::endl;
   for(const auto& obj_ref : obj_refs) {
