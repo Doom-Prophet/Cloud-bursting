@@ -52,19 +52,23 @@ int main(int argc, char **argv) {
   std::cout << "Checkpoint 1" << std::endl;
   std::cout << "type of object_test:" << typeid(object_test).name() << std::endl;
   // obj_refs.emplace_back(ray::Put(100));
-  std::vector<ray::ObjectRef<std::vector<std::string>>> obj_refs;
-  obj_refs.push_back(object_test);
-  std::cout << "Checkpoint 2" << std::endl;
-  for(const auto& obj_ref : obj_refs) {
-    if(obj_ref.IsObjectRef()){
-      std::cout << "Checkpoint 3" << std::endl;
-    }
-    // std::cout << "obj_ref:" << obj_ref << std::endl;
-    std::cout << "type of obj_ref:" << typeid(obj_ref).name() << std::endl;
-    auto value = *(ray::Get(obj_ref));
-    // auto value = ray::Get(obj_ref);
-    std::cout << "Value:" << value[0] << std::endl;
-  }
+  // std::vector<ray::ObjectRef<std::vector<std::string>>> obj_refs;
+  // obj_refs.push_back(object_test);
+  // std::cout << "Checkpoint 2" << std::endl;
+  // for(const auto& obj_ref : obj_refs) {
+  //   if(obj_ref.IsObjectRef()){
+  //     std::cout << "Checkpoint 3" << std::endl;
+  //   }
+  //   // std::cout << "obj_ref:" << obj_ref << std::endl;
+  //   std::cout << "type of obj_ref:" << typeid(obj_ref).name() << std::endl;
+  //   auto value = *(ray::Get(obj_ref));
+  //   // auto value = ray::Get(obj_ref);
+  //   std::cout << "Value:" << value[0] << std::endl;
+  // }
+
+  auto value = *(ray::Get(obj_ref));
+  // auto value = ray::Get(obj_ref);
+  std::cout << "Value:" << value[0] << std::endl;
 
   /// common task
   auto task_object = ray::Task(Plus).Remote(1, 2);
