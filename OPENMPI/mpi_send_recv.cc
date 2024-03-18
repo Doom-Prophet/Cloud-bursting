@@ -33,7 +33,12 @@ public:
       return WorldSize;
     }
 
-    auto Send(const void *buf){
+    auto Send_int(std::vector<int>& buf){
+      auto obj_ref = ray::Put(buf);
+      return obj_ref;
+    }
+
+    auto Send_str(std::vector<std::string>& buf){
       auto obj_ref = ray::Put(buf);
       return obj_ref;
     }
@@ -94,7 +99,7 @@ int MPI_Send(std::vector<T>& buf, int count, MPI_Datatype datatype, int source, 
 template<>
 int MPI_Send(std::vector<int>& buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm){
     // Logic for handling std::vector<int>
-    auto obj_ref = workers[source].Task(&MPI_Worker::Send).Remote(buf);
+    auto obj_ref = workers[source].Task(&MPI_Worker::Send_int).Remote(buf);
     // tag=-1 means error
     if (tag==-1){
       MPI_Abort(comm, 1);
@@ -114,7 +119,7 @@ int MPI_Send(std::vector<int>& buf, int count, MPI_Datatype datatype, int source
 template<>
 int MPI_Send(std::vector<std::string>& buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm){
     // Logic for handling std::vector<std::string>
-    auto obj_ref = workers[source].Task(&MPI_Worker::Send).Remote(buf);
+    auto obj_ref = workers[source].Task(&MPI_Worker::Send_str).Remote(buf);
     // tag=-1 means error
     if (tag==-1){
       MPI_Abort(comm, 1);
