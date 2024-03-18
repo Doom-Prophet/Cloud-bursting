@@ -54,6 +54,10 @@ int main(int argc, char **argv) {
   // obj_refs.emplace_back(ray::Put(100));
   // std::vector<ray::ObjectRef<std::vector<std::string>>> obj_refs;
   // obj_refs.push_back(object_test);
+
+  std::vector<ray::ObjectRef<std::vector<std::string>>> objectList;
+  objectList.push_back(object_test);
+
   // std::cout << "Checkpoint 2" << std::endl;
   // for(const auto& obj_ref : obj_refs) {
   //   if(obj_ref.IsObjectRef()){
