@@ -84,23 +84,69 @@ int MPI_Abort(MPI_Comm comm, int errorcode){
   return 0;
 }
 
-int MPI_Send(const void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm){
-// auto MPI_Send(std::vector<ray::ActorHandle<MPI_Worker>> workers, int source, const void *buf){
-  auto obj_ref = workers[source].Task(&MPI_Worker::Send).Remote(buf);
-  // tag=-1 means error
-  if (tag==-1){
+template<typename T>
+int MPI_Send(const std::vector<T>& buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm){
     MPI_Abort(comm, 1);
-  }
-  // tag=0 means int
-  if(tag==0){
-    obj_refs_int.push_back(obj_ref);
-  }
-  // tag=1 means string
-  if(tag==1){
-    obj_refs_str.push_back(obj_ref);
-  }
-  return 0;
 }
+
+// Specialization for std::vector<int>
+template<>
+int MPI_Send(const std::vector<int>& buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm){
+    // Logic for handling std::vector<int>
+    auto obj_ref = workers[source].Task(&MPI_Worker::Send).Remote(buf);
+    // tag=-1 means error
+    if (tag==-1){
+      MPI_Abort(comm, 1);
+    }
+    // tag=0 means int
+    if(tag==0){
+      obj_refs_int.push_back(obj_ref);
+    }
+    // tag=1 means string
+    if(tag==1){
+      obj_refs_str.push_back(obj_ref);
+    }
+    return 0;
+}
+}
+
+// Specialization for std::vector<std::string>
+template<>
+int MPI_Send(const std::vector<std::string>& buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm){
+    // Logic for handling std::vector<std::string>
+    auto obj_ref = workers[source].Task(&MPI_Worker::Send).Remote(buf);
+    // tag=-1 means error
+    if (tag==-1){
+      MPI_Abort(comm, 1);
+    }
+    // tag=0 means int
+    if(tag==0){
+      obj_refs_int.push_back(obj_ref);
+    }
+    // tag=1 means string
+    if(tag==1){
+      obj_refs_str.push_back(obj_ref);
+    }
+    return 0;
+}
+
+// int MPI_Send(const void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm){
+// // auto MPI_Send(std::vector<ray::ActorHandle<MPI_Worker>> workers, int source, const void *buf){
+//   auto obj_ref = workers[source].Task(&MPI_Worker::Send).Remote(buf);
+//   // tag=-1 means error
+//   if (tag==-1){
+//     MPI_Abort(comm, 1);
+//   }
+//   // tag=0 means int
+//   if(tag==0){
+//     obj_refs_int.push_back(obj_ref);
+//   }
+//   // tag=1 means string
+//   if(tag==1){
+//     obj_refs_str.push_back(obj_ref);
+//   }
+//   return 0;
+// }
 
 auto MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Status *status) {
     // Make this into a loop, keep waiting for valid obj_ref
@@ -168,7 +214,7 @@ int main(int argc, char** argv) {
 
   int send_package = MPI_Send(stringToSend, cnt, datatype, 1, tag, comm);
   auto recv_package = MPI_Recv(void_buf, cnt, datatype, 2, tag, comm, status);
-  std::cout << "recv_package = " << recv_package << std::endl;
+  // std::cout << "recv_package = " << recv_package << std::endl;
 
   // Following parts not yet updated!
   // if (world_rank == 0) {
