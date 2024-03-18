@@ -43,7 +43,12 @@ public:
       return obj_ref;
     }
 
-    auto Recv(auto obj_ref){
+    auto Recv_int(ray::ObjectRef<std::vector<int>> obj_ref){
+      auto result = ray::Get(obj_ref);
+      return result;
+    }
+
+    auto Recv_str(ray::ObjectRef<std::vector<std::string>> obj_ref){
       auto result = ray::Get(obj_ref);
       return result;
     }
@@ -167,7 +172,7 @@ auto MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, 
           auto obj_ref = obj_refs_int.front();
           obj_refs_int.erase(obj_refs_int.begin());
 
-          auto value = *(ray::Get(workers[source].Task(&MPI_Worker::Recv).Remote(obj_ref)));
+          auto value = *(ray::Get(workers[source].Task(&MPI_Worker::Recv_int).Remote(obj_ref)));
           for(const auto& integer : value) {
             std::cout << integer << std::endl;
             recv_buf.push_back(integer);
@@ -180,7 +185,7 @@ auto MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, 
           auto obj_ref = obj_refs_str.front();
           obj_refs_str.erase(obj_refs_str.begin());
 
-          auto value = *(ray::Get(workers[source].Task(&MPI_Worker::Recv).Remote(obj_ref)));
+          auto value = *(ray::Get(workers[source].Task(&MPI_Worker::Recv_str).Remote(obj_ref)));
           for(const auto& str : value) {
             std::cout << str << std::endl;
             recv_buf.push_back(str);
@@ -191,7 +196,7 @@ auto MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, 
     return -1;
 }
 
-RAY_REMOTE(MPI_Worker::CreateWorker, &MPI_Worker::MPI_Comm_rank, &MPI_Worker::MPI_Comm_size, &MPI_Worker::Send_int, &MPI_Worker::Send_str, &MPI_Worker::Recv);
+RAY_REMOTE(MPI_Worker::CreateWorker, &MPI_Worker::MPI_Comm_rank, &MPI_Worker::MPI_Comm_size, &MPI_Worker::Send_int, &MPI_Worker::Send_str, &MPI_Worker::Recv_int, &MPI_Worker::Recv_str);
 
 //////////////////////////////////////////////////////////////////////////
 
