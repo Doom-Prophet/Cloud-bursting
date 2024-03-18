@@ -109,7 +109,6 @@ int MPI_Send(std::vector<int>& buf, int count, MPI_Datatype datatype, int source
     }
     return 0;
 }
-}
 
 // Specialization for std::vector<std::string>
 template<>
