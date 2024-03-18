@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
   // std::cout << "Alice: " << testmap2["Alice"] << std::endl;
 
   std::cout << "Checkpoint 0" << std::endl;
-  std::vector<std::string> stringToSend = {"Hello world"};
+  std::vector<std::string> stringToSend = {"Hello","I'm","Zicheng Ma","Nice to meet you!"};
   auto object_test = ray::Put(stringToSend);
   std::cout << "Checkpoint 1" << std::endl;
   std::cout << "type of object_test:" << typeid(object_test).name() << std::endl;
@@ -57,14 +57,12 @@ int main(int argc, char **argv) {
 
   std::cout << "Checkpoint 2" << std::endl;
   for(const auto& obj_ref : objectList) {
-    if(obj_ref.IsObjectRef()){
-      std::cout << "Checkpoint 3" << std::endl;
-    }
-    // std::cout << "obj_ref:" << obj_ref << std::endl;
-    // std::cout << "type of obj_ref:" << typeid(obj_ref).name() << std::endl;
     auto value = *(ray::Get(obj_ref));
-    // auto value = ray::Get(obj_ref);
-    std::cout << "Value:" << value[0] << std::endl;
+    for(const auto& str : value) {
+      std::cout << str << std::endl;
+    }
+  }
+
   }
 
   /// common task
