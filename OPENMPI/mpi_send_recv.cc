@@ -195,7 +195,7 @@ auto MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, 
     return -1;
 }
 
-RAY_REMOTE(MPI_Worker::CreateWorker, &MPI_Worker::MPI_Comm_rank, &MPI_Worker::MPI_Comm_size, &MPI_Worker::Send, &MPI_Worker::Recv);
+RAY_REMOTE(MPI_Worker::CreateWorker, &MPI_Worker::MPI_Comm_rank, &MPI_Worker::MPI_Comm_size, &MPI_Worker::Send_int, &MPI_Worker::Send_str, &MPI_Worker::Recv);
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -215,7 +215,7 @@ int main(int argc, char** argv) {
   int cnt = strlen("Hello world");
   int tag = 1;
   std::vector<std::string> stringToSend = {"Hello","I'm","Zicheng Ma","Nice to meet you!"};
-  std::vector<std::string> void_buf[];
+  std::vector<std::string> void_buf;
 
   int send_package = MPI_Send(stringToSend, cnt, datatype, 1, tag, comm);
   auto recv_package = MPI_Recv(void_buf, cnt, datatype, 2, tag, comm, status);
