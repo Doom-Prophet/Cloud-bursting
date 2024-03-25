@@ -43,7 +43,7 @@ public:
       return obj_ref;
     }
 
-    auto Recv_int(ray::ObjectRef<std::shared_ptr<std::vector<int>>> obj_ref){
+    auto Recv_int(ray::ObjectRef<std::vector<int>> obj_ref){
       auto result = ray::Get(obj_ref);
       return result;
     }
