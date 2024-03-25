@@ -64,8 +64,6 @@ std::vector<ray::ObjectRef<std::vector<int>>> obj_refs_int;
 
 std::vector<ray::ObjectRef<std::vector<std::string>>> obj_refs_str;
 
-// std::map<int, ray::ObjectRef<void*>> obj_refs_map;
-
 int MPI_Init(int *argc, char ***argv){
 // std::vector<ray::ActorHandle<MPI_Worker>> MPI_Init(int size){
     int size = atoi(*argv[1]);
