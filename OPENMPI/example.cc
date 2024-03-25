@@ -32,7 +32,7 @@ class Counter {
   auto test_put(int num){
     auto result = ray::Put(num);
     std::cout << "Test 3:" << typeid(result).name() << std::endl;
-    return result
+    return result;
   }
 
 };
