@@ -44,7 +44,7 @@ auto test_send(std::vector<std::string>& buf){
 }
 
 /// Declare remote function
-RAY_REMOTE(Counter::FactoryCreate, &Counter::Add);
+RAY_REMOTE(Counter::FactoryCreate, &Counter::Add, &Counter::test_put);
 
 int main(int argc, char **argv) {
   /// initialization
