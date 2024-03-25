@@ -107,9 +107,13 @@ int main(int argc, char **argv) {
   auto test_obj = actor.Task(&Counter::test_put).Remote(3);
   std::cout << "Test 5:" << typeid(test_obj).name() << std::endl;
 
-  auto obj = *(ray::Get(test_obj));
+  auto obj = ray::Get(test_obj);
   std::cout << "Test 9:" << typeid(obj).name() << std::endl;
   std::cout << "Test 10:" << obj << std::endl;
+
+  // auto obj = *(ray::Get(test_obj));
+  // std::cout << "Test 9:" << typeid(obj).name() << std::endl;
+  // std::cout << "Test 10:" << obj << std::endl;
 
   // obj_refs_int.push_back(test_obj);
 
