@@ -57,7 +57,7 @@ auto test_send(std::vector<std::string>& buf){
 /// Declare remote function
 RAY_REMOTE(Counter::FactoryCreate, &Counter::Add, &Counter::test_put, &Counter::test_get);
 
-std::vector<ray::ObjectRef<int>> obj_refs_int;
+std::vector<ray::ObjectRef<ray::ObjectRef<int>>> obj_refs_int;
 
 int main(int argc, char **argv) {
   /// initialization
