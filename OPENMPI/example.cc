@@ -28,6 +28,13 @@ class Counter {
     count += x;
     return count;
   }
+
+  auto test_put(int num){
+    auto result = ray::Put(num);
+    std::cout << "Test 3:" << typeid(result).name() << std::endl;
+    return result
+  }
+
 };
 
 auto test_send(std::vector<std::string>& buf){
@@ -82,6 +89,16 @@ int main(int argc, char **argv) {
   ray::ActorHandle<Counter> actor = ray::Actor(Counter::FactoryCreate).Remote(0);
   /// actor task
   auto actor_object = actor.Task(&Counter::Add).Remote(3);
+
+
+
+
+  auto test_obj = actor.Task(&Counter::test_put).Remote(3);
+  std::cout << "Test 4:" << typeid(test_obj).name() << std::endl;
+
+
+
+
   int actor_task_result = *(ray::Get(actor_object));
   std::cout << "actor_task_result = " << actor_task_result << std::endl;
   /// actor task with reference argument
