@@ -102,7 +102,7 @@ int main(int argc, char **argv) {
   auto test_obj = actor.Task(&Counter::test_put).Remote(3);
   std::cout << "Test 5:" << typeid(test_obj).name() << std::endl;
 
-  auto test_obj_get = *(actor.Task(&Counter::test_get).Remote(test_obj));
+  auto test_obj_get = actor.Task(&Counter::test_get).Remote(test_obj);
   std::cout << "Test 8:" << typeid(test_obj_get).name() << std::endl;
 
 
