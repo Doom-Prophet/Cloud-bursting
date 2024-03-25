@@ -108,13 +108,13 @@ int MPI_Send(std::vector<int>& buf, int count, MPI_Datatype datatype, int source
       MPI_Abort(comm, 1);
     }
     // tag=0 means int
-    // if(tag==0){
-    //   obj_refs_int.push_back(obj_ref);
-    // }
-    // // tag=1 means string
-    // if(tag==1){
-    //   obj_refs_str.push_back(obj_ref);
-    // }
+    if(tag==0){
+      obj_refs_int.push_back(obj_ref);
+    }
+    // tag=1 means string
+    if(tag==1){
+      obj_refs_str.push_back(obj_ref);
+    }
     return 0;
 }
 
@@ -127,14 +127,14 @@ int MPI_Send(std::vector<std::string>& buf, int count, MPI_Datatype datatype, in
     if (tag==-1){
       MPI_Abort(comm, 1);
     }
-    // tag=0 means int
-    // if(tag==0){
-    //   obj_refs_int.push_back(obj_ref);
-    // }
-    // // tag=1 means string
-    // if(tag==1){
-    //   obj_refs_str.push_back(obj_ref);
-    // }
+    tag=0 means int
+    if(tag==0){
+      obj_refs_int.push_back(obj_ref);
+    }
+    // tag=1 means string
+    if(tag==1){
+      obj_refs_str.push_back(obj_ref);
+    }
     return 0;
 }
 
@@ -170,7 +170,7 @@ auto MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, 
           auto obj_ref = obj_refs_int.front();
           obj_refs_int.erase(obj_refs_int.begin());
 
-          auto value = *(ray::Get(workers[source].Task(&MPI_Worker::Recv_int).Remote(obj_ref)));
+          auto value = *(workers[source].Task(&MPI_Worker::Recv_int).Remote(obj_ref));
           for(const auto& integer : value) {
             std::cout << integer << std::endl;
             recv_buf.push_back(integer);
@@ -205,7 +205,6 @@ int main(int argc, char** argv) {
 
   // Initialization
   auto workers = MPI_Init(argc,argv);
-  // auto workers = MPI_Init(2);
 
   // if (*(ray::Get(workers[0].Task(&MPI_Worker::MPI_Comm_size).Remote())) < 2) {
   //   MPI_Abort(1);
