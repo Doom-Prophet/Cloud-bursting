@@ -30,8 +30,9 @@ class Counter {
   }
 
   auto test_put(int num){
+    std::cout << "Test 3:" << typeid(num).name() << std::endl;
     auto result = ray::Put(num);
-    std::cout << "Test 3:" << typeid(result).name() << std::endl;
+    std::cout << "Test 4:" << typeid(result).name() << std::endl;
     return result;
   }
 
@@ -94,7 +95,7 @@ int main(int argc, char **argv) {
 
 
   auto test_obj = actor.Task(&Counter::test_put).Remote(3);
-  std::cout << "Test 4:" << typeid(test_obj).name() << std::endl;
+  std::cout << "Test 5:" << typeid(test_obj).name() << std::endl;
 
 
 
