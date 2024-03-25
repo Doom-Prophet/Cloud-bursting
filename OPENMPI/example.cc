@@ -36,10 +36,12 @@ class Counter {
     return result;
   }
 
-  auto test_get(ray::ObjectRef<int> objref){
+  auto test_get(std::vector<ray::ObjectRef<int>> objref){
     std::cout << "Test 6:" << typeid(objref).name() << std::endl;
-    auto result = ray::Get(objref);
-    std::cout << "Test 7:" << typeid(result).name() << std::endl;
+    auto obj_ref = objref.front();
+    std::cout << "Test 7:" << typeid(obj_ref).name() << std::endl;
+    auto result = ray::Get(obj_ref);
+    std::cout << "Test 8:" << typeid(result).name() << std::endl;
     return result;
   }
 
@@ -53,6 +55,8 @@ auto test_send(std::vector<std::string>& buf){
 
 /// Declare remote function
 RAY_REMOTE(Counter::FactoryCreate, &Counter::Add, &Counter::test_put, &Counter::test_get);
+
+std::vector<ray::ObjectRef<<int>> obj_refs_int;
 
 int main(int argc, char **argv) {
   /// initialization
@@ -102,7 +106,9 @@ int main(int argc, char **argv) {
   auto test_obj = actor.Task(&Counter::test_put).Remote(3);
   std::cout << "Test 5:" << typeid(test_obj).name() << std::endl;
 
-  auto test_obj_get = actor.Task(&Counter::test_get).Remote(test_obj);
+  obj_refs_int.push_back(test_obj);
+
+  auto test_obj_get = actor.Task(&Counter::test_get).Remote(obj_refs_int);
   std::cout << "Test 8:" << typeid(test_obj_get).name() << std::endl;
 
 
